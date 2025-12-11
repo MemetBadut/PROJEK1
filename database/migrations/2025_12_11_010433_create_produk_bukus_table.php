@@ -11,7 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        //
+        Schema::create('produk_bukus', function (Blueprint $table) {
+            $table->id();
+            $table->string('nama_buku');
+            $table->string('isbn');
+            $table->string('publisher');
+            $table->timestamps();
+        });
     }
 
     /**
@@ -19,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        //
+        Schema::dropIfExists('produk_bukus');
     }
 };

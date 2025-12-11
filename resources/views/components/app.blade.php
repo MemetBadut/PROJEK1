@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <title>Toko Buku John</title>
+</head>
+
+<body>
+    {{-- Header Start --}}
+    <nav class="bg-neutral-primary fixed w-full z-20 top-0 start-0 border-b border-default h16">
+        <div class="max-w-7xl flex flex-wrap items-center justify-between mx-auto p-4">
+            <a href="https://flowbite.com/" class="flex items-center space-x-3 rtl:space-x-reverse">
+                <img src="{{ asset('icons/iconbuku.png') }}" class="h-7" alt="Flowbite Logo" />
+                <span class="self-center text-xl text-heading font-semibold whitespace-nowrap">BOOKSTORE</span>
+            </a>
+            <button data-collapse-toggle="navbar-default" type="button"
+                class="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-body rounded-base md:hidden hover:bg-neutral-secondary-soft hover:text-heading focus:outline-none focus:ring-2 focus:ring-neutral-tertiary"
+                aria-controls="navbar-default" aria-expanded="false">
+                <span class="sr-only">Open main menu</span>
+                <svg class="w-6 h-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                    fill="none" viewBox="0 0 24 24">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M5 7h14M5 12h14M5 17h14" />
+                </svg>
+            </button>
+            <div class="hidden w-full md:block md:w-auto" id="navbar-default">
+                <ul
+                    class="font-medium flex flex-col p-4 md:p-0 mt-4 border border-default rounded-base bg-neutral-secondary-soft md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0 md:border-0 md:bg-neutral-primary">
+                    @if (request()->routeIs('data_produk.index'))
+                        <li>
+                            <a href="{{ route('input_rating.index') }}"
+                                class="block py-2 px-3 text-heading rounded hover:bg-neutral-tertiary md:hover:bg-transparent md:border-0 md:hover:text-fg-brand md:p-0
+                            md:dark:hover:bg-transparent">
+                                Input Rating</a>
+                        </li>
+                        <li>
+                            <a href="{{ route('voting_author.index') }}"
+                                class="block py-2 px-3 text-heading rounded hover:bg-neutral-tertiary md:hover:bg-transparent md:border-0 md:hover:text-fg-brand md:p-0
+                            md:dark:hover:bg-transparent">Voting
+                                Author</a>
+                        </li>
+                    @elseif(request()->routeIs('voting_author.index'))
+                        <li>
+                            <a href="{{ route('data_produk.index') }}"
+                                class="block py-2 px-3 text-heading rounded hover:bg-neutral-tertiary md:hover:bg-transparent md:border-0 md:hover:text-fg-brand md:p-0
+                            md:dark:hover:bg-transparent">
+                                Home</a>
+                        </li>
+                        <li>
+                            <a href="{{ route('input_rating.index') }}"
+                                class="block py-2 px-3 text-heading rounded hover:bg-neutral-tertiary md:hover:bg-transparent md:border-0 md:hover:text-fg-brand md:p-0
+                            md:dark:hover:bg-transparent">Input
+                                Rating</a>
+                        </li>
+                    @elseif (request()->routeIs('input_rating.index'))
+                        <li>
+                            <a href="{{ route('data_produk.index') }}"
+                                class="block py-2 px-3 text-heading rounded hover:bg-neutral-tertiary md:hover:bg-transparent md:border-0 md:hover:text-fg-brand md:p-0
+                            md:dark:hover:bg-transparent">
+                                Home</a>
+                        </li>
+                        <li>
+                            <a href="{{ route('voting_author.index') }}"
+                                class="block py-2 px-3 text-heading rounded hover:bg-neutral-tertiary md:hover:bg-transparent md:border-0 md:hover:text-fg-brand md:p-0
+                            md:dark:hover:bg-transparent">Vote Author</a>
+                        </li>
+                    @endif
+
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    {{-- Header end --}}
+    <main class="pt-16">
+        {{ $slot }}
+    </main>
+</body>
+
+</html>
