@@ -7,19 +7,24 @@
     </div>
 
     <div class="max-w-auto">
-        <div class="flex justify-center gap-5">
-            <div class="">
-                <label for=""></label>
-                <select name="nama_buku" id="">
-                    <option value="" class="text-justify">Nama Buku 1</option>
-                </select>
+        <form action=" ">
+            <div class="flex justify-center gap-10">
+                <div class="flex flex-col">
+                    <label for="Nama_buku" class="bg-gray-200 p-2 ">Cari nama Buku</label>
+                    <select name="nama_buku" id="">
+                        <option value="" class="text-justify">Nama Buku 1</option>
+                        <option value="" class="text-justify">Nama Buku 2</option>
+                    </select>
+                </div>
+                <div class="flex flex-col">
+                    <label for="" class="bg-gray-200 p-2">Input Rating</label>
+                    <select name="nama_buku" id="">
+                        <option value="" class="text-center">1</option>
+                    </select>
+                </div>
             </div>
-            <div>
-                <select name="nama_buku" id="">
-                    <option value="" class="text-center">1</option>
-                </select>
-            </div>
-        </div>
+        </form>
+
     </div>
 
 

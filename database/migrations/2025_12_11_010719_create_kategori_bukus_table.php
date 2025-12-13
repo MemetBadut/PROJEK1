@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('kategori_bukus', function (Blueprint $table) {
             $table->id();
+            $table->string('kategori_buku');
             $table->timestamps();
         });
     }

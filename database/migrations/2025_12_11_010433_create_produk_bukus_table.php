@@ -15,7 +15,9 @@ return new class extends Migration
             $table->id();
             $table->string('nama_buku');
             $table->string('isbn');
+            $table->integer('rating_buku');
             $table->string('publisher');
+            $table->longText('lokasi_toko');
             $table->timestamps();
         });
     }

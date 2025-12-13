@@ -16,8 +16,10 @@ class PenulisBukuFactory extends Factory
      */
     public function definition(): array
     {
+
         return [
-            //
+            'nama_penulis' => fake('id_ID')->name('male'),
+            'voters' => fake()->randomNumber(),
         ];
     }
 }

@@ -2,8 +2,11 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\KategoriBuku;
+use Database\Factories\KategoriBukuFactory;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 class KategoriBukuSeeder extends Seeder
 {
@@ -12,6 +15,6 @@ class KategoriBukuSeeder extends Seeder
      */
     public function run(): void
     {
-        //
+        KategoriBuku::factory()->count(20)->create();
     }
 }

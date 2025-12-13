@@ -16,8 +16,10 @@ class KategoriBukuFactory extends Factory
      */
     public function definition(): array
     {
+        $nama = fake()->unique()->words(2, true);
+
         return [
-            //
+            'kategori_buku' => $nama,
         ];
     }
 }

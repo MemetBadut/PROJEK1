@@ -2,9 +2,11 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class ProdukBuku extends Model
 {
-    protected $fillable = ['nama_buku', ];
+    use HasFactory;
+    protected $fillable = ['nama_buku', 'isbn', 'publisher', 'lokasi_toko', 'created_at'];
 }

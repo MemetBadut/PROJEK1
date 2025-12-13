@@ -11,10 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('penulis_bukus', function (Blueprint $table) {
+        Schema::create('buku_kategori_pivot', function (Blueprint $table) {
             $table->id();
-            $table->string('nama_penulis');
-            $table->integer('voters');
+            $table->foreignId('produk_bukus_id')->constrained('produk_bukus')->onDelete('cascade');
+            $table->foreignId('kategori_bukus_id')->constrained('kategori_bukus')->onDelete('cascade');
             $table->timestamps();
         });
     }
@@ -24,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('penulis_bukus');
+        Schema::dropIfExists('buku_kategori_pivot');
     }
 };

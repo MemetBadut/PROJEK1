@@ -3,12 +3,15 @@
     <div class="ml-2.5 text-center mt-5">
         <h2 class="font-bold text-xl">Tabel Buku</h2>
         <p class="">Daftar Buku Johndoe</p>
-        <br>
+        <br><br>
     </div>
 
     <div class="overflow-x-auto ">
         <div class="max-w-6xl mx-auto">
             <table class="w-full">
+                <select name="" id="">
+                    
+                </select>
                 <thead class="bg-gray-100">
                     <tr>
                         <th class="px-6 py-4 text-center">Tgl.</th>
