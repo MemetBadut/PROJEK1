@@ -13,7 +13,11 @@ class ProdukBukuController extends Controller
     public function index()
     {
         $data_buku = ProdukBuku::all();
-         return view('data_buku.index', compact('data_buku'));
+        $data_buku = ProdukBuku::with(['kategoriBuku'])
+            ->orderBy('nama_buku', 'asc')
+            ->paginate(10);
+
+        return view('data_buku.index', compact('data_buku'));
     }
 
     /**

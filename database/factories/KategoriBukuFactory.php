@@ -20,6 +20,8 @@ class KategoriBukuFactory extends Factory
 
         return [
             'kategori_buku' => $nama,
+            'created_at' => now(),
+            'updated_at' => now()
         ];
     }
 }

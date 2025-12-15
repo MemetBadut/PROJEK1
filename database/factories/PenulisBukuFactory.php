@@ -20,6 +20,8 @@ class PenulisBukuFactory extends Factory
         return [
             'nama_penulis' => fake('id_ID')->name('male'),
             'voters' => fake()->randomNumber(),
+            'created_at' => now(),
+            'updated_at' => now()
         ];
     }
 }

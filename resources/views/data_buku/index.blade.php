@@ -33,14 +33,17 @@
                             <td class="px-6 py-4 text-justify"></td>
                             <td class="px-6 py-4 text-justify"></td>
                             <td class="px-6 py-4 text-justify">{{ $buku->isbn }}</td>
-                            <td class="px-6 py-4 text-center">{{ $buku->rating_buku }}/10</td>
-                            <td class="px-6 py-4 text-center">{{ $buku->lokasi_toko }}</td>
+                            <td class="px-6 py-4 text-justify">{{ $buku->rating_buku }}/10</td>
+                            <td class="px-6 py-4 text-justify">{{ $buku->lokasi_toko }}</td>
                         </tr>
                     @endforeach
                 </tbody>
             </table>
         </div>
-
+        {{-- footer --}}
+        <div>
+            {{ $data_buku->links() }}
+        </div>
     </div>
 
 </x-app>
