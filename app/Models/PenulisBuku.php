@@ -8,5 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 class PenulisBuku extends Model
 {
     use HasFactory;
-    protected $fillable = [''];
+    protected $fillable = ['nama_penulis'];
+    protected $table = [' penulis_bukus'];
+
+    public function produkBuku(){
+        return $this->hasMany(ProdukBuku::class);
+    }
+
 }

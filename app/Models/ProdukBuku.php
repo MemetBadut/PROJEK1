@@ -13,4 +13,8 @@ class ProdukBuku extends Model
     public function kategoriBuku(){
         return $this->belongsToMany(KategoriBuku::class, 'buku_kategori_pivot', 'produk_bukus_id', 'kategori_bukus_id');
     }
+
+    public function authors(){
+         return $this->belongsTo(PenulisBuku::class);
+    }
 }

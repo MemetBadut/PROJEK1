@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\PenulisBuku;
 use Illuminate\Http\Request;
 
 class AuthorBukuController extends Controller
@@ -11,7 +12,9 @@ class AuthorBukuController extends Controller
      */
     public function index()
     {
-        return view('famous_author.index');
+        $data_authors = PenulisBuku::all();
+
+        return view('famous_author.index', compact('data_authors'));
     }
 
     /**
