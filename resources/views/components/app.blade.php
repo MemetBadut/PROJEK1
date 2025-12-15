@@ -68,7 +68,6 @@
                             md:dark:hover:bg-transparent">Vote Author</a>
                         </li>
                     @endif
-
                 </ul>
             </div>
         </div>

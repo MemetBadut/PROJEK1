@@ -40,7 +40,10 @@
                 </tbody>
             </table>
         </div>
-
+        {{-- footer --}}
+        <div>
+            {{ $data_buku->links() }}
+        </div>
     </div>
 
 </x-app>
