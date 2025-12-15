@@ -13,7 +13,7 @@ class ProdukBukuController extends Controller
     public function index()
     {
         $data_buku = ProdukBuku::all();
-         return view('data_buku.index', );
+         return view('data_buku.index', compact('data_buku'));
     }
 
     /**
