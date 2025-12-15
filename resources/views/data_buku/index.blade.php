@@ -10,7 +10,7 @@
         <div class="max-w-6xl mx-auto">
             <table class="w-full">
                 <select name="" id="">
-                    
+
                 </select>
                 <thead class="bg-gray-100">
                     <tr>
@@ -26,14 +26,17 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td class="px-6 py-4 text-center">1</td>
-                        <td class="px-6 py-4 text-justify">anak ayam</td>
-                        <td class="px-6 py-4 text-justify">APALAH</td>
-                        <td class="px-6 py-4 text-justify">APALAH</td>
-                        <td class="px-6 py-4 text-justify">APALAH</td>
-                        <td class="px-6 py-4 text-center">8.9</td>
-                    </tr>
+                    @foreach ($data_buku as $buku)
+                        <tr>
+                            <td class="px-6 py-4 text-center">{{ $buku->created_at }}</td>
+                            <td class="px-6 py-4 text-justify">{{ $buku->nama_buku }}</td>
+                            <td class="px-6 py-4 text-justify"></td>
+                            <td class="px-6 py-4 text-justify"></td>
+                            <td class="px-6 py-4 text-justify">{{ $buku->isbn }}</td>
+                            <td class="px-6 py-4 text-justify">{{ $buku->rating_buku }}/10</td>
+                            <td class="px-6 py-4 text-justify">{{ $buku->lokasi_toko }}</td>
+                        </tr>
+                    @endforeach
                 </tbody>
             </table>
         </div>

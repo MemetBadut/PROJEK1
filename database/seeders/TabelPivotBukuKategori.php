@@ -15,10 +15,12 @@ class TabelPivotBukuKategori extends Seeder
     public function run(): void
     {
         $kumpulan_buku = ProdukBuku::all();
-        $kategori = KategoriBuku::pluck('id')->toArray();
+        $kategori = KategoriBuku::pluck('id');
 
-        foreach($kumpulan_buku as $buku){
-            $buku->kategoriBuku()->attach(array_rand(array_flip($kategori), rand(5, 5)));
+        foreach ($kumpulan_buku as $buku) {
+            $buku->kategoriBuku()->sync(
+                $kategori->random(5)->values()->toArray()
+            );
         }
     }
 }
