@@ -14,13 +14,20 @@ class TabelPivotBukuKategori extends Seeder
      */
     public function run(): void
     {
-        $kumpulan_buku = ProdukBuku::all();
-        $kategori = KategoriBuku::pluck('id');
+        $kategoriIds = KategoriBuku::pluck('id')->toArray();
+        $bukuList = ProdukBuku::all();
 
-        foreach ($kumpulan_buku as $buku) {
-            $buku->kategoriBuku()->sync(
-                $kategori->random(5)->values()->toArray()
-            );
+        foreach($bukuList as $buku){
+            if(count($kategoriIds) === 0){
+                dd('Kategori Kosong');
+            }
+
+            $randomKategori = collect($kategoriIds)
+            ->shuffle()
+            ->take(5)
+            ->toArray();
+
+            $buku->kategoriBuku()->sync($randomKategori);
         }
     }
 }
