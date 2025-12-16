@@ -19,4 +19,8 @@ class ProdukBuku extends Model
     {
         return $this->belongsToMany(KategoriBuku::class, 'buku_kategori_pivot', 'produk_bukus_id', 'kategori_bukus_id');
     }
+
+    public function ratingUser(){
+        return $this->hasOne(RatingUser::class, 'produk_buku_id', 'id');
+    }
 }

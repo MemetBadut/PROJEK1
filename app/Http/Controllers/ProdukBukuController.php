@@ -13,6 +13,9 @@ class ProdukBukuController extends Controller
     public function index()
     {
         $data_buku = ProdukBuku::all();
+
+        $data_buku = ProdukBuku::with(['penulisBuku'])->get();
+
         $data_buku = ProdukBuku::with(['kategoriBuku'])
             ->orderBy('nama_buku', 'asc')
             ->paginate(10);

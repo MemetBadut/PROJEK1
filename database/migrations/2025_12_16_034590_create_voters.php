@@ -11,11 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('rating_buku', function (Blueprint $table) {
+        Schema::create('voters', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('voters_id')->constrained('voters')->onDelete('cascade');
-            $table->foreignId('produk_buku_id')->constrained('produk_bukus')->onDelete('cascade');
-            $table->unsignedTinyInteger('score');
+            $table->string('voter_palsu')->unique();
             $table->timestamps();
         });
     }
@@ -25,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('rating_buku');
+        Schema::dropIfExists('voters');
     }
 };
