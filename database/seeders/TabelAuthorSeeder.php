@@ -13,6 +13,6 @@ class TabelAuthorSeeder extends Seeder
      */
     public function run(): void
     {
-        PenulisBuku::factory()->count(30)->create();
+        PenulisBuku::factory()->count(1000)->create();
     }
 }

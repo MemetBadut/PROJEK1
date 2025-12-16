@@ -4,15 +4,14 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-class InputRatingController extends Controller
+class InventoriesController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        // $data_rating = ;
-        return view('input_rating.index');
+        //
     }
 
     /**

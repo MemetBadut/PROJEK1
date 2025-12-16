@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('rating_buku', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('produk_buku_id')->constrained('produk_bukus')->onDelete('cascade');
             $table->unsignedTinyInteger('score');
             $table->timestamps();
         });

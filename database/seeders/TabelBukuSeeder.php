@@ -13,8 +13,8 @@ class TabelBukuSeeder extends Seeder
      */
     public function run(): void
     {
-        $batch = 10;
-        $total = 100;
+        $batch = 500;
+        $total = 10000;
         for ($i = 0; $i < $total / $batch; $i++) {
             ProdukBuku::factory()->count($batch)->create();
         }
