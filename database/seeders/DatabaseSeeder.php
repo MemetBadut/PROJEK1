@@ -22,8 +22,8 @@ class DatabaseSeeder extends Seeder
 
         $this->call([
             KategoriBukuSeeder::class,
-            TabelBukuSeeder::class,
             TabelAuthorSeeder::class,
+            TabelBukuSeeder::class,
             TabelPivotBukuKategori::class,
         ]);
     }

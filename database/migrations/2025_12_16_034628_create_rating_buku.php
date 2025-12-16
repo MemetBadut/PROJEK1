@@ -11,10 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('penulis_bukus', function (Blueprint $table) {
+        Schema::create('rating_buku', function (Blueprint $table) {
             $table->id();
-            $table->string('nama_penulis');
-            $table->integer('voters');
+            $table->unsignedTinyInteger('score');
             $table->timestamps();
         });
     }
@@ -24,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('penulis_bukus');
+        Schema::dropIfExists('rating_buku');
     }
 };

@@ -9,10 +9,10 @@ class PenulisBuku extends Model
 {
     use HasFactory;
     protected $fillable = ['nama_penulis'];
-    protected $table = [' penulis_bukus'];
+    protected $table = 'penulis_bukus';
 
-    public function produkBuku(){
-        return $this->hasMany(ProdukBuku::class);
+    public function produkBuku()
+    {
+        return $this->hasMany(ProdukBuku::class, 'penulis_buku_id', 'id');
     }
-
 }

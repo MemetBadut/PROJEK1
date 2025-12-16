@@ -30,8 +30,14 @@
                         <tr>
                             <td class="px-6 py-4 text-center">{{ $buku->created_at }}</td>
                             <td class="px-6 py-4 text-justify">{{ $buku->nama_buku }}</td>
-                            <td class="px-6 py-4 text-justify"></td>
-                            <td class="px-6 py-4 text-justify"></td>
+                            <td class="px-6 py-4 text-justify">
+                                {{ $buku->penulisBuku->nama_penulis }}
+                            </td>
+                            <td class="px-6 py-4 text-justify">
+                                @foreach ($buku->kategoriBuku as $kategori)
+                                    {{ $kategori->kategori_buku . ', ' }}
+                                @endforeach
+                            </td>
                             <td class="px-6 py-4 text-justify">{{ $buku->isbn }}</td>
                             <td class="px-6 py-4 text-justify">{{ $buku->rating_buku }}/10</td>
                             <td class="px-6 py-4 text-justify">{{ $buku->lokasi_toko }}</td>

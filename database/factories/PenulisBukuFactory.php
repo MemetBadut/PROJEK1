@@ -18,8 +18,7 @@ class PenulisBukuFactory extends Factory
     {
 
         return [
-            'nama_penulis' => fake('id_ID')->name('male'),
-            'voters' => fake()->randomNumber(),
+            'nama_penulis' => fake('id_ID')->name(),
             'created_at' => now(),
             'updated_at' => now()
         ];
