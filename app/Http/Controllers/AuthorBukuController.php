@@ -12,7 +12,9 @@ class AuthorBukuController extends Controller
      */
     public function index()
     {
-        $data_authors = PenulisBuku::all();
+        $data_authors = PenulisBuku::query()
+            ->select('id', 'nama_penulis')
+            ->paginate(100);
 
         return view('famous_author.index', compact('data_authors'));
     }
@@ -38,7 +40,13 @@ class AuthorBukuController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $data_author = PenulisBuku::with([
+            'produk_bukus' => function ($q) {
+                $q->select('id', 'penulis_buku_id', 'nama_buku');
+            }
+        ])->findOrFail($id);
+
+        return view('famous_author.show', compact('data_author'));
     }
 
     /**

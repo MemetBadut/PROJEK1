@@ -21,6 +21,6 @@ class ProdukBuku extends Model
     }
 
     public function ratingUser(){
-        return $this->belongsTo(RatingUser::class, 'produk_buku_id', 'id');
+        return $this->hasOne(RatingUser::class, 'produk_buku_id', 'id');
     }
 }

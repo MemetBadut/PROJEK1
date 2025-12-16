@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\PenulisBuku;
 use Illuminate\Http\Request;
 
 class InputRatingController extends Controller
@@ -11,8 +12,7 @@ class InputRatingController extends Controller
      */
     public function index()
     {
-        // $data_rating = ;
-        return view('input_rating.index');
+        return view('input_rating.index', );
     }
 
     /**
