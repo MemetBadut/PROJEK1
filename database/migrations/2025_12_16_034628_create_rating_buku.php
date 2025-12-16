@@ -17,6 +17,11 @@ return new class extends Migration
             $table->foreignId('produk_buku_id')->constrained('produk_bukus')->onDelete('cascade');
             $table->unsignedTinyInteger('score');
             $table->timestamps();
+
+            $table->unique(['voters_id', 'produk_buku_id']);
+
+            $table->index('produk_buku_id');
+            $table->index('created_at');
         });
     }
 

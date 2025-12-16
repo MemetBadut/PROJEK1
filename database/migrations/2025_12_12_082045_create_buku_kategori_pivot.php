@@ -16,6 +16,8 @@ return new class extends Migration
             $table->foreignId('produk_bukus_id')->constrained('produk_bukus')->onDelete('cascade');
             $table->foreignId('kategori_bukus_id')->constrained('kategori_bukus')->onDelete('cascade');
             $table->timestamps();
+
+            $table->unique(['produk_bukus_id', 'kategori_bukus_id']);
         });
     }
 
