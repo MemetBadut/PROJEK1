@@ -12,30 +12,15 @@ class AuthorRangkingController extends Controller
      */
     public function index()
     {
-        $data_authors = PenulisBuku::with([
-            'produkBuku' => function ($q) {
-                $q->withAvg('ratingUser', 'score')
-                    ->withCount('ratingUser');
-            }
-        ])
+        $data_authors = PenulisBuku::with(['produkBuku'])
             ->get()
             ->map(function ($author) {
-
-                $author->best_work = $author->produkBuku
-                    ->whereNotNull('rating_user_avg_score')
-                    ->sortByDesc('rating_user_avg_score')
-                    ->first();
-
-                $author->worst_work = $author->produkBuku
-                    ->whereNotNull('rating_user_avg_score')
-                    ->sortBy('rating_user_avg_score')
-                    ->first();
-
-                $author->total_voters = $author->produkBuku
-                    ->sum('rating_user_count');
-
+                $author->total_voters = $author->produkBuku->sum(function ($buku) {
+                    return $buku->ratingUser->count();
+                });
                 return $author;
             });
+
         return view('famous_author.index', compact('data_authors'));
     }
 

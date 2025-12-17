@@ -42,7 +42,7 @@ class AuthorBukuController extends Controller
     {
         $data_author = PenulisBuku::with([
             'produk_bukus' => function ($q) {
-                $q->select('id', 'penulis_buku_id', 'nama_buku');
+                $q->select('id', 'penulis_bukus_id', 'nama_buku');
             }
         ])->findOrFail($id);
 

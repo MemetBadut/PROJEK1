@@ -21,7 +21,7 @@ class ProdukBukuFactory extends Factory
     {
         return [
             'nama_buku' => fake()->sentence(),
-            'penulis_buku_id' => PenulisBuku::pluck('id')->random(),
+            'penulis_buksu_id' => PenulisBuku::pluck('id')->random(),
             'isbn' => fake()->isbn10(),
             'publisher' => fake('id_ID')->company(),
             'lokasi_toko' => fake('id_ID')->address(),

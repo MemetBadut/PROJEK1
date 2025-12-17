@@ -11,8 +11,23 @@ class PenulisBuku extends Model
     protected $fillable = ['nama_penulis'];
     protected $table = 'penulis_bukus';
 
-    public function produkBuku()
+    public function getBestWorkAttribute()
     {
-        return $this->hasMany(ProdukBuku::class, 'penulis_buku_id', 'id');
+        return $this->produkBuku()
+            ->withAvg('ratingUser', 'score')
+            ->withCount('ratingUser')
+            ->having('rating_user_count', '>', 0)
+            ->orderByDesc('rating_user_avg_score')
+            ->first();
+    }
+
+    public function getWorstWorkAttribute()
+    {
+        return $this->produkBuku()
+            ->withAvg('ratingUser', 'score')
+            ->withCount('ratingUser')
+            ->having('rating_user_count', '>', 0)
+            ->orderBy('rating_user_avg_score')
+            ->first();
     }
 }
