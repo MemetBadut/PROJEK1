@@ -16,7 +16,6 @@ return new class extends Migration
             $table->string('nama_buku');
             $table->foreignId('penulis_buku_id')->constrained('penulis_bukus')->onDelete('cascade');
             $table->string('isbn');
-            $table->integer('rating_buku');
             $table->string('publisher');
             $table->longText('lokasi_toko');
             $table->timestamps();
