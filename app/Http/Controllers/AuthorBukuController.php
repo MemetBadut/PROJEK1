@@ -12,9 +12,26 @@ class AuthorBukuController extends Controller
      */
     public function index()
     {
-        $data_authors = PenulisBuku::query()
-            ->select('id', 'nama_penulis')
-            ->paginate(100);
+        $data_authors = PenulisBuku::with([
+            'produkBuku' => function ($q) {
+                $q->withAvg('ratingUser', 'score');
+            }
+        ])->paginate(100);
+
+        // hitung manual karena ini REPORT, bukan kolom DB
+        $data_authors->getCollection()->transform(function ($author) {
+            $author->best_work = $author->produkBuku
+                ->sortByDesc('rating_user_avg_score')
+                ->first();
+
+            $author->worst_work = $author->produkBuku
+                ->sortBy('rating_user_avg_score')
+                ->first();
+
+            $author->avg_rating = $author->produkBuku
+                ->avg('rating_user_avg_score');
+            return $author;
+        });
 
         return view('famous_author.index', compact('data_authors'));
     }
@@ -45,6 +62,8 @@ class AuthorBukuController extends Controller
                 $q->select('id', 'penulis_bukus_id', 'nama_buku');
             }
         ])->findOrFail($id);
+
+
 
         return view('famous_author.show', compact('data_author'));
     }

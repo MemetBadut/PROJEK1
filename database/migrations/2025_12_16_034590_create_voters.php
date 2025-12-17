@@ -13,7 +13,8 @@ return new class extends Migration
     {
         Schema::create('data_voters', function (Blueprint $table) {
             $table->id();
-            $table->string('voter_palsu')->unique();
+            $table->string('voter_palsu');
+            $table->enum('type', ['real', 'dummy'])->default('dummy'); // tipe voter
             $table->timestamps();
         });
     }

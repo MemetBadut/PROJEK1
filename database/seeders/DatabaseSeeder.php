@@ -25,6 +25,7 @@ class DatabaseSeeder extends Seeder
             TabelAuthorSeeder::class,
             DummyVoterSeeder::class,
             TabelBukuSeeder::class,
+            RatingSeeder::class,
             TabelPivotBukuKategori::class,
         ]);
     }

@@ -14,13 +14,13 @@ return new class extends Migration
         Schema::create('rating_users', function (Blueprint $table) {
             $table->id();
             $table->foreignId('data_voters_id')->constrained('data_voters')->onDelete('cascade');
-            $table->foreignId('produk_buku_id')->constrained('produk_bukus')->onDelete('cascade');
+            $table->foreignId('produk_bukus_id')->constrained('produk_bukus')->onDelete('cascade');
             $table->unsignedTinyInteger('score');
             $table->timestamps();
 
-            $table->unique(['data_voters_id', 'produk_buku_id']);
+            $table->unique(['data_voters_id', 'produk_bukus_id']);
 
-            $table->index('produk_buku_id');
+            $table->index('produk_bukus_id');
             $table->index('created_at');
         });
     }

@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\DataVoters;
 use App\Models\ProdukBuku;
 use App\Models\RatingUser;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -15,17 +16,14 @@ class RatingSeeder extends Seeder
      */
     public function run(): void
     {
+        $voterIds  = DataVoters::pluck('id')->toArray();
         $produkIds = ProdukBuku::pluck('id')->toArray();
-        $totalVoters = 500000;
 
-        for($i = 0; $i < 500000; $i++) {
-            $voterId = rand(1, $totalVoters);
-
+        foreach (range(1, 100) as $i) {
             RatingUser::create([
-                'data_voters_id'  => $voterId,
-                'produk_buku_id' => $produkIds[array_rand($produkIds)],
-                'score' => rand(1, 10),
-                'created_at' => Carbon::now()->subDays(rand(0, 60)),
+                'data_voters_id' => fake()->randomElement($voterIds),
+                'produk_bukus_id' => fake()->randomElement($produkIds),
+                'score' => fake()->numberBetween(1, 5),
             ]);
         }
     }

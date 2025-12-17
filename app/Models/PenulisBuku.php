@@ -11,23 +11,28 @@ class PenulisBuku extends Model
     protected $fillable = ['nama_penulis'];
     protected $table = 'penulis_bukus';
 
-    public function getBestWorkAttribute()
+    public function produkBuku()
     {
-        return $this->produkBuku()
-            ->withAvg('ratingUser', 'score')
-            ->withCount('ratingUser')
-            ->having('rating_user_count', '>', 0)
-            ->orderByDesc('rating_user_avg_score')
-            ->first();
+        return $this->hasMany(ProdukBuku::class, 'penulis_bukus_id', 'id');
     }
 
-    public function getWorstWorkAttribute()
+    public function best_work()
     {
-        return $this->produkBuku()
-            ->withAvg('ratingUser', 'score')
-            ->withCount('ratingUser')
-            ->having('rating_user_count', '>', 0)
-            ->orderBy('rating_user_avg_score')
-            ->first();
+        return $this->hasOne(ProdukBuku::class)->ofMany('avg_rating', 'max');
+    }
+
+    public function worst_work()
+    {
+        return $this->hasOne(ProdukBuku::class)->ofMany('avg_rating', 'min');
+    }
+
+    public function ratings()
+    {
+        return $this->hasManyThrough(
+            RatingUser::class,
+            ProdukBuku::class,
+            'penulis_bukus_id',
+            'produk_bukus_id'
+        );
     }
 }
