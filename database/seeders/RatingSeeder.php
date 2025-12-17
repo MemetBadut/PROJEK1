@@ -22,7 +22,7 @@ class RatingSeeder extends Seeder
             $voterId = rand(1, $totalVoters);
 
             RatingUser::create([
-                'voters_id'  => $voterId,
+                'data_voters_id'  => $voterId,
                 'produk_buku_id' => $produkIds[array_rand($produkIds)],
                 'score' => rand(1, 10),
                 'created_at' => Carbon::now()->subDays(rand(0, 60)),

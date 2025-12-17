@@ -20,9 +20,12 @@
                     </tr>
                 </thead>
                 <tbody>
+                    @php
+                        $i = 1;
+                    @endphp
                     @foreach ($data_authors as $author)
                         <tr>
-                            <td class="px-6 py-4 text-center">{{ $loop->iteration }}</td>
+                            <td class="px-6 py-4 text-center">{{ $i }}</td>
                             <td class="px-6 py-4 text-justify">{{ $author->nama_penulis }}</td>
                             <td class="px-6 py-4 text-justify">{{ $author->best_work->nama_buku ?? '-' }}</td>
                             <td class="px-6 py-4 text-justify">{{ $author->worst_work->nama_buku ?? '-' }}</td>
@@ -40,12 +43,16 @@
                                 </button>
                             </td>
                         </tr>
+                        @php
+                            $i++;
+                         @endphp
                     @endforeach
                 </tbody>
-
             </table>
         </div>
-
+        <div>
+            {{ $data_authors->links() }}
+        </div>
     </div>
 
 </x-app>

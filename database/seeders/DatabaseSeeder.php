@@ -23,6 +23,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             KategoriBukuSeeder::class,
             TabelAuthorSeeder::class,
+            DummyVoterSeeder::class,
             TabelBukuSeeder::class,
             TabelPivotBukuKategori::class,
         ]);

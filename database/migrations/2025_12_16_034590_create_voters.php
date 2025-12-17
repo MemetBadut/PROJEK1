@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('voters', function (Blueprint $table) {
+        Schema::create('data_voters', function (Blueprint $table) {
             $table->id();
             $table->string('voter_palsu')->unique();
             $table->timestamps();
@@ -23,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('voters');
+        Schema::dropIfExists('data_voters');
     }
 };

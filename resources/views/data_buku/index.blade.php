@@ -39,7 +39,7 @@
                                 @endforeach
                             </td>
                             <td class="px-6 py-4 text-justify">{{ $buku->isbn }}</td>
-                            <td class="px-6 py-4 text-justify">{{ $buku->rating_buku }}/10</td>
+                            <td class="px-6 py-4 text-justify">{{ $buku->rating_users }}/10</td>
                             <td class="px-6 py-4 text-justify">{{ $buku->lokasi_toko }}</td>
                         </tr>
                     @endforeach
