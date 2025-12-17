@@ -23,7 +23,6 @@ class ProdukBukuFactory extends Factory
             'nama_buku' => fake()->sentence(),
             'penulis_buku_id' => PenulisBuku::pluck('id')->random(),
             'isbn' => fake()->isbn10(),
-            'rating_users' => fake()->randomFloat(1, 1, 10 ),
             'publisher' => fake('id_ID')->company(),
             'lokasi_toko' => fake('id_ID')->address(),
             'created_at' => fake()->dateTimeBetween('-3 years', 'now'),
