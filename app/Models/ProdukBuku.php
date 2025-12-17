@@ -21,6 +21,6 @@ class ProdukBuku extends Model
     }
 
     public function ratingUser(){
-        return $this->hasOne(RatingUser::class, 'produk_buku_id', 'id');
+        return $this->hasMany(RatingUser::class, 'produk_bukus_id', 'id');
     }
 }

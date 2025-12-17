@@ -20,9 +20,6 @@ class DummyVoterSeeder extends Seeder
         $chunkSize = 50000;
 
         for ($i = 0; $i < $totalVoters; $i++) {
-            // DataVoters::create([
-            //     'voter_palsu' => Str::uuid(),
-            // ]);
             $data[] = [
                 'voter_palsu' => Str::uuid(),
             ];
