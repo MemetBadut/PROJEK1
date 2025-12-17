@@ -2,8 +2,10 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\DataVoters;
+use Illuminate\Support\Str;
 use Illuminate\Database\Seeder;
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 class DummyVoterSeeder extends Seeder
 {
@@ -12,6 +14,10 @@ class DummyVoterSeeder extends Seeder
      */
     public function run(): void
     {
-        
+        for($i = 0; $i < 500000; $i++) {
+            DataVoters::create([
+                'voter_palsu' => Str::uuid(),
+            ]);
+        }
     }
 }

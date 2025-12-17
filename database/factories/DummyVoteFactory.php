@@ -5,7 +5,7 @@ namespace Database\Factories;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Model>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\DataVoters>
  */
 class DummyVoteFactory extends Factory
 {
@@ -17,7 +17,7 @@ class DummyVoteFactory extends Factory
     public function definition(): array
     {
         return [
-            'voter_palsu' => fake()->
+            'voter_palsu' => fake('id_ID')->name()
         ];
     }
 }
