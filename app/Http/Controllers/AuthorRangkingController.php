@@ -12,25 +12,24 @@ class AuthorRangkingController extends Controller
      */
     public function index()
     {
-        return view('famous_author.index', [
-            'best' => $this->best(),
-            'worst' => $this->worst(),
-        ]);
+        $data_author = PenulisBuku::query()
+            ->with([
+                'produkBuku' => function ($q) {
+                    $q->withAvg('ratingUser as avg_rating', 'score');
+                }
+            ])
+            ->withAvg('produkBuku.ratingUser as avg_rating', 'score')
+            ->get()
+            ->map(function ($author) {
+                $author->best_work = $author->produkBuku->whereNotNull('avg_rating')->sortByDesc('avg_rating')->first();
+                $author->worst_work = $author->produkBuku->whereNotNull('avg_rating')->sortBy('avg_rating')->first();
+                return $author;
+            });
+
+
     }
 
-    protected function best() {
-        return PenulisBuku::withAvg('produkBuku')
-        ->orderByDesc('')
-        ->limit(20)
-        ->get();
-    }
 
-    protected function worst() {
-        return PenulisBuku::withAvg('')
-        ->orderBy('')
-        ->limit(20)
-        ->get();
-    }
 
     /**
      * Show the form for creating a new resource.

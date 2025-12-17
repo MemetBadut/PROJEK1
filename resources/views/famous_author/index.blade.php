@@ -14,6 +14,7 @@
                         <th class="px-6 py-4 text-center">Nama Penulis</th>
                         <th class="px-6 py-4 text-center">Karya Terbaik</th>
                         <th class="px-6 py-4 text-center">Karya Terburuk</th>
+                        <th class="px-6 py-4 text-center">Voter Author</th>
                         <th class="px-6 py-4 text-center">Aksi</th>
                         <th class="px-6 py-4 "></th>
                     </tr>
@@ -21,11 +22,12 @@
                 <tbody>
                     @foreach ($data_authors as $author)
                         <tr>
-                            <td class="px-6 py-4 text-center">1</td>
+                            <td class="px-6 py-4 text-center">{{ $loop->iteration }}</td>
                             <td class="px-6 py-4 text-justify">{{ $author->nama_penulis }}</td>
-                            <td class="px-6 py-4 text-justify">{{  }}</td>
+                            <td class="px-6 py-4 text-justify">{{ $author->best_work->nama_buku ?? '-' }}</td>
+                            <td class="px-6 py-4 text-justify">{{ $author->worst_work->nama_buku ?? '-' }}</td>
+                            <td class="px-6 py-4 text-justify">{{ number_format($author->avg_rating) }}</td>
                             <td class="px-6 py-4 text-justify"></td>
-                            <td class="px-6 py-4 text-center">1769566000</td>
                             <td>
                                 <button type="submit" class="cursor-pointer">
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24"
