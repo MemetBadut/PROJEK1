@@ -19,7 +19,7 @@ class RatingSeeder extends Seeder
         $voterIds  = DataVoters::pluck('id')->toArray();
         $produkIds = ProdukBuku::pluck('id')->toArray();
 
-        foreach (range(1, 100) as $i) {
+        foreach (range(1, 500000) as $i) {
             RatingUser::create([
                 'data_voters_id' => fake()->randomElement($voterIds),
                 'produk_bukus_id' => fake()->randomElement($produkIds),
