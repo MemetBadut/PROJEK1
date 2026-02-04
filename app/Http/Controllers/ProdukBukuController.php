@@ -14,12 +14,6 @@ class ProdukBukuController extends Controller
     {
         $data_buku = ProdukBuku::all();
 
-        $data_buku = ProdukBuku::with(['penulisBuku'])->get();
-
-        $data_buku = ProdukBuku::with(['kategoriBuku'])
-            ->orderBy('nama_buku', 'asc')
-            ->paginate(5);
-
         return view('data_buku.index', compact('data_buku'));
     }
 
