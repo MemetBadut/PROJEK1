@@ -5,9 +5,7 @@ use App\Http\Controllers\InputRatingController;
 use App\Http\Controllers\ProdukBukuController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [ProdukBukuController::class, 'index']);
 
 Route::resource('data_produk', ProdukBukuController::class);
 Route::resource('voting_author', AuthorBukuController::class);

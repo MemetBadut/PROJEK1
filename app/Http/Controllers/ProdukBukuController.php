@@ -18,7 +18,7 @@ class ProdukBukuController extends Controller
 
         $data_buku = ProdukBuku::with(['kategoriBuku'])
             ->orderBy('nama_buku', 'asc')
-            ->paginate(10);
+            ->paginate(5);
 
         return view('data_buku.index', compact('data_buku'));
     }

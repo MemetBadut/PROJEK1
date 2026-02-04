@@ -8,7 +8,16 @@ use Illuminate\Database\Eloquent\Model;
 class ProdukBuku extends Model
 {
     use HasFactory;
-    protected $fillable = ['nama_buku', 'penulis_bukus_id', 'isbn', 'publisher', 'lokasi_toko', 'created_at'];
+    protected $fillable = [
+        'nama_buku',
+        'penulis_bukus_id',
+        'isbn',
+        'publisher',
+        'lokasi_toko',
+        'created_at'
+    ];
+
+    protected $table = 'produk_bukus';
 
     public function penulisBuku()
     {
@@ -20,7 +29,29 @@ class ProdukBuku extends Model
         return $this->belongsToMany(KategoriBuku::class, 'buku_kategori_pivot', 'produk_bukus_id', 'kategori_bukus_id');
     }
 
-    public function ratingUser(){
+    public function ratingUser()
+    {
         return $this->hasMany(RatingUser::class, 'produk_bukus_id', 'id');
+    }
+
+    public function scopeSearch($query, $keyword){
+        return $query->where('nama_buku', 'like', "%{$keyword}%")
+        ->orWhere('isbn', 'like', "%{$keyword}%")
+        ->orWhere('publisher', 'like', "%{$keyword}%");
+    }
+
+    public function scopeFilterCategory($query, $status){
+        return match($status){
+            'available' => $query->orderBy('tersedia'),
+            'rented' => $query->orderBy('dipinjam'),
+            'reserved' => $query->orderBy('dipesan'),
+            default => $query
+        };
+    }
+
+    public function scopeFilterYear($query, $year){
+        return match($year){
+            'release' => $query->orderBy('created_at', 'desc'),
+        };
     }
 }
