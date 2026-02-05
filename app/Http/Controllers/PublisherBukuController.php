@@ -2,19 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\ProdukBuku;
+use App\Models\PublisherBuku;
 use Illuminate\Http\Request;
 
-class ProdukBukuController extends Controller
+class PublisherBukuController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $data_buku = ProdukBuku::listBooks()->paginate(20);
-
-        return view('data_buku.index', compact('data_buku'));
+        //
     }
 
     /**
@@ -36,7 +34,7 @@ class ProdukBukuController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(PublisherBuku $publisherBuku)
     {
         //
     }
@@ -44,7 +42,7 @@ class ProdukBukuController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(PublisherBuku $publisherBuku)
     {
         //
     }
@@ -52,7 +50,7 @@ class ProdukBukuController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, PublisherBuku $publisherBuku)
     {
         //
     }
@@ -60,7 +58,7 @@ class ProdukBukuController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(PublisherBuku $publisherBuku)
     {
         //
     }

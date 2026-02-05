@@ -32,7 +32,7 @@ class PenulisBuku extends Model
             RatingUser::class,
             ProdukBuku::class,
             'penulis_bukus_id',
-            'produk_bukus_id'
+            'produk_buku_id'
         );
     }
 }

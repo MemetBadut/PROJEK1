@@ -16,8 +16,7 @@ return new class extends Migration
             $table->string('nama_buku');
             $table->foreignId('penulis_bukus_id')->constrained('penulis_bukus')->onDelete('cascade');
             $table->string('isbn');
-            $table->string('publisher');
-            $table->longText('lokasi_toko');
+            $table->foreignId('publisher_id')->constrained('publisher')->onDelete('cascade');
             $table->timestamps();
         });
     }

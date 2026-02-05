@@ -18,7 +18,7 @@ class RatingUserFactory extends Factory
     {
         return [
             'data_voters_id' => DummyVoteFactory::inRandomOrder()->value('id'),
-            'produk_bukus_id' => ProdukBukuFactory::inRandomOrder()->value('id'),
+            'produk_buku_id' => ProdukBukuFactory::inRandomOrder()->value('id'),
             'score' => fake()->numberBetween(1, 10),
         ];
     }

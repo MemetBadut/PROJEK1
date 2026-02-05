@@ -12,9 +12,9 @@ class ProdukBuku extends Model
         'nama_buku',
         'penulis_bukus_id',
         'isbn',
-        'publisher',
-        'lokasi_toko',
-        'created_at'
+        'publisher_id',
+        'created_at',
+        'updated_at'
     ];
 
     protected $table = 'produk_bukus';
@@ -26,22 +26,28 @@ class ProdukBuku extends Model
 
     public function kategoriBuku()
     {
-        return $this->belongsToMany(KategoriBuku::class, 'buku_kategori_pivot', 'produk_bukus_id', 'kategori_bukus_id');
+        return $this->belongsToMany(KategoriBuku::class, 'buku_kategori_pivot', 'produk_buku_id', 'kategori_buku_id');
     }
 
     public function ratingUser()
     {
-        return $this->hasMany(RatingUser::class, 'produk_bukus_id', 'id');
+        return $this->hasMany(RatingUser::class, 'produk_buku_id', 'id');
     }
 
-    public function scopeSearch($query, $keyword){
+    public function publisherBuku(){
+        return $this->belongsTo(PublisherBuku::class, '');
+    }
+
+    public function scopeSearch($query, $keyword)
+    {
         return $query->where('nama_buku', 'like', "%{$keyword}%")
-        ->orWhere('isbn', 'like', "%{$keyword}%")
-        ->orWhere('publisher', 'like', "%{$keyword}%");
+            ->orWhere('isbn', 'like', "%{$keyword}%")
+            ->orWhere('publisher_id', 'like', "%{$keyword}%");
     }
 
-    public function scopeFilterCategory($query, $status){
-        return match($status){
+    public function scopeFilterCategory($query, $status)
+    {
+        return match ($status) {
             'available' => $query->orderBy('tersedia'),
             'rented' => $query->orderBy('dipinjam'),
             'reserved' => $query->orderBy('dipesan'),
@@ -49,9 +55,19 @@ class ProdukBuku extends Model
         };
     }
 
-    public function scopeFilterYear($query, $year){
-        return match($year){
+    public function scopeFilterYear($query, $year)
+    {
+        return match ($year) {
             'release' => $query->orderBy('created_at', 'desc'),
         };
+    }
+
+    public function scopeListBooks($query)
+    {
+        return $query->select('id', 'nama_buku', 'penulis_bukus_id', 'publisher_id', 'isbn')
+            ->with([
+                'kategoriBuku:id,kategori_buku',
+                'penulisBuku:id,nama_penulis'
+            ]);
     }
 }

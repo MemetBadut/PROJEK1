@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\PenulisBuku;
+use App\Models\PublisherBuku;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 use function Symfony\Component\Clock\now;
@@ -20,13 +21,17 @@ class ProdukBukuFactory extends Factory
     public function definition(): array
     {
         return [
-            'nama_buku' => fake()->sentence(),
+            'nama_buku' => fake()->sentence(3),
             'penulis_bukus_id' => PenulisBuku::pluck('id')->random(),
+            'publisher_id' => PublisherBuku::pluck('id')->random(),
             'isbn' => fake()->isbn10(),
-            'publisher' => fake('id_ID')->company(),
-            'lokasi_toko' => fake('id_ID')->address(),
-            'created_at' => fake()->dateTimeBetween('-3 years', 'now'),
-            'updated_at' => now(),
+            'created_at' => fake()
+                ->dateTimeBetween(' -3 years', 'now')
+                ->format('Y-m-d H:i:s'),
+
+            'updated_at' => fake()
+                ->dateTimeBetween('created_at', 'now')
+                ->format('Y-m-d H:i:s'),
         ];
     }
 }

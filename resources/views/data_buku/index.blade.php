@@ -14,13 +14,12 @@
                 </select>
                 <thead class="bg-gray-100">
                     <tr>
-                        <th class="px-6 py-4 text-center">Tgl.</th>
                         <th class="px-6 py-4 text-center ">Judul Buku</th>
                         <th class="px-6 py-4 text-center">Nama Penulis</th>
                         <th class="px-6 py-4 text-center">Kategori Buku</th>
                         <th class="px-6 py-4 text-center">ISBN</th>
                         <th class="px-6 py-4 text-center">Rating Buku</th>
-                        <th class="px-6 py-4 text-center">Lokasi Toko </th>
+                        <th class="px-6 py-4 text-center">Voters</th>
                         <th class="px-6 py-4 text-center">Status Buku</th>
                         <th class="px-6 py-4 "></th>
                     </tr>
@@ -28,15 +27,16 @@
                 <tbody>
                     @foreach ($data_buku as $buku)
                         <tr>
-                            <td class="px-6 py-4 text-center">{{ $buku->created_at }}</td>
                             <td class="px-6 py-4 text-justify">{{ $buku->nama_buku }}</td>
                             <td class="px-6 py-4 text-justify">
                                 {{ $buku->penulisBuku->nama_penulis }}
                             </td>
                             <td class="px-6 py-4 text-justify">
-                                @foreach ($buku->kategoriBuku as $kategori)
-                                    {{ $kategori->kategori_buku . ', ' }}
-                                @endforeach
+                                {{
+                                    $buku->kategoriBuku->isNotEmpty()
+                                    ? $buku->kategoriBuku->pluck('kategori_buku')->implode(', ')
+                                    : '-'
+                                    }}
                             </td>
                             <td class="px-6 py-4 text-justify">{{ $buku->isbn }}</td>
                             <td class="px-6 py-4 text-justify">{{ $buku->rating_users }}/10</td>

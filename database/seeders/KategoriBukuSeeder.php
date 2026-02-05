@@ -15,6 +15,7 @@ class KategoriBukuSeeder extends Seeder
      */
     public function run(): void
     {
-        KategoriBuku::factory()->count(3000)->create();
+        $rows = KategoriBuku::factory()->count(3000)->make()->toArray();
+        DB::table('kategori_bukus')->insert($rows);
     }
 }

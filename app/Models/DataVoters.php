@@ -6,7 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class DataVoters extends Model
 {
-    protected $fillable = ['voter_palsu'];
+    protected $fillable = [
+        'produk_buku_id',
+        'total_voters',
+        'avg_rating',
+        'avg_7_days'
+    ];
     public function ratingBuku(){
         return $this->belongsTo(RatingUser::class, 'rating_user_id', 'id');
     }

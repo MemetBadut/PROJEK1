@@ -2,28 +2,31 @@
 
 namespace Database\Seeders;
 
-use App\Models\DataVoters;
+use App\Models\User;
+use RuntimeException;
 use App\Models\ProdukBuku;
 use App\Models\RatingUser;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Illuminate\Database\Seeder;
 use Illuminate\Support\Carbon;
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 class RatingSeeder extends Seeder
 {
     /**
      * Run the database seeds.
      */
-    public function run(): void
-    {
-        $voterIds  = DataVoters::pluck('id')->toArray();
-        $produkIds = ProdukBuku::pluck('id')->toArray();
+    public function run(){
+        $user = User::pluck('id')->all();
+        $buku = ProdukBuku::pluck('id')->all();
 
-        foreach (range(1, 500000) as $i) {
+        foreach(range(1, 500_000) as $i){
             RatingUser::create([
-                'data_voters_id' => fake()->randomElement($voterIds),
-                'produk_bukus_id' => fake()->randomElement($produkIds),
-                'score' => fake()->numberBetween(1, 5),
+                'user_id' => fake()->randomElement($user),
+                'produk_buku_id' => fake()->randomElement($buku),
+                'rating' => rand(1, 5),
+                'created_at' =>now()->subDays(rand(0, 60)),
+                'updated_at' => now(),
             ]);
         }
     }

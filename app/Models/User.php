@@ -45,4 +45,7 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    const ROLE_ADMIN = 'admin';
+    const ROLE_USER = 'user';
 }

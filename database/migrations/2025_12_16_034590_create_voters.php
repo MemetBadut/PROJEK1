@@ -13,8 +13,10 @@ return new class extends Migration
     {
         Schema::create('data_voters', function (Blueprint $table) {
             $table->id();
-            $table->string('voter_palsu');
-            $table->enum('type', ['real', 'dummy'])->default('dummy'); // tipe voter
+            $table->foreignId('produk_buku_id')->constrained('produk_bukus')->onDelete('cascade');
+            $table->unsignedBigInteger('total_voters');
+            $table->decimal('avg_rating', 3, 2);
+            $table->decimal('avg_7_days', 3, 2);
             $table->timestamps();
         });
     }

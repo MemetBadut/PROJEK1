@@ -6,14 +6,18 @@ use Illuminate\Database\Eloquent\Model;
 
 class RatingUser extends Model
 {
-    protected $fillable = ['data_voters_id', 'produk_bukus_id', 'score'];
-    protected $table = 'rating_users';
+    protected $fillable = [
+        'user_id',
+        'produk_buku_id',
+        'rating'
+    ];
+protected $table = 'rating_users';
 
     public function voter(){
-        return $this->belongsTo(DataVoters::class, 'data_voters_id', 'id');
+        return $this->belongsTo(User::class, 'user_id', 'id');
     }
 
     public function produkBuku(){
-        return $this->belongsTo(ProdukBuku::class, 'produk_bukus_id', 'id');
+        return $this->belongsTo(ProdukBuku::class, 'produk_buku_id', 'id');
     }
 }
