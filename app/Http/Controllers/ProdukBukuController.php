@@ -21,6 +21,9 @@ class ProdukBukuController extends Controller
                 default => $q
             };
         })
+        ->when($request->filled('search'), function ($q) use ($request){
+            $q->search($request->search);
+        })
         ->paginate(20)
         ->withQueryString();
         return view('data_buku.index', compact('data_buku'));

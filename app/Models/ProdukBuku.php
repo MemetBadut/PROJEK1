@@ -34,19 +34,27 @@ class ProdukBuku extends Model
         return $this->hasMany(RatingUser::class, 'produk_buku_id', 'id');
     }
 
-    public function publisherBuku(){
+    public function publisherBuku()
+    {
         return $this->belongsTo(PublisherBuku::class, '');
     }
 
-    public function ratings(){
+    public function ratings()
+    {
         return $this->hasMany(RatingUser::class, 'produk_buku_id');
     }
 
     public function scopeSearch($query, $keyword)
     {
-        return $query->where('nama_buku', 'like', "%{$keyword}%")
-            ->orWhere('isbn', 'like', "%{$keyword}%")
-            ->orWhere('publisher_id', 'like', "%{$keyword}%");
+        return $query->where(function ($q) use ($keyword) {
+            $q->where('nama_buku', 'like', "%{$keyword}%")
+                ->orWhere('isbn', 'like', "%{$keyword}%")
+                ->orWhere('publisher_id', 'like', "%{$keyword}%");
+        });
+
+        if(is_numeric($keyword)){
+            return $query->orWhere('isbn', 'like', "%{$keyword}%");
+        }
     }
 
     public function scopeFilterCategory($query, $status)
@@ -77,21 +85,21 @@ class ProdukBuku extends Model
             ->withAvg('ratings as avg_rating', 'rating');
     }
 
-    public function scopeTotalRate($query, $vote){
-        return match($vote){
+    public function scopeTotalRate($query, $vote)
+    {
+        return match ($vote) {
             'most' => $query->orderBy('total_voters', 'desc'),
             'least' => $query->orderBy('total_voters', 'asc'),
             default => $query
         };
     }
 
-    public function scopeAlphabet($query, $alpha){
-        return match($alpha){
+    public function scopeAlphabet($query, $alpha)
+    {
+        return match ($alpha) {
             'name_asc' => $query->orderBy('nama_buku', 'asc'),
             'name_desc' => $query->orderBy('nama_buku', 'desc'),
             default => $query
         };
     }
-
-
 }

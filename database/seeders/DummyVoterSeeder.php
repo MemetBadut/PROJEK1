@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\DataVoters;
+use App\Models\RatingUser;
 use Illuminate\Support\Str;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
@@ -15,19 +16,19 @@ class DummyVoterSeeder extends Seeder
      */
     public function run(): void
     {
-        $data = [];
-        $totalVoters = 500000;
-        $chunkSize = 50000;
-
-        for ($i = 0; $i < $totalVoters; $i++) {
-            $data[] = [
-                'voter_palsu' => Str::uuid(),
-            ];
-
-            if ($i % $chunkSize === 0) {
-                DB::table('data_voters')->insert($data);
-                $data = []; // Kosongkan lagi array-nya biar hemat RAM
-            }
-        }
+        RatingUser::query()
+            ->selectRaw('produk_buku_id, COUNT(*) as total_voters, AVG(rating) as average_rating')
+            ->groupBy('produk_buku_id')
+            ->chunk(500, function ($rows) {
+                foreach ($rows as $row) {
+                    DataVoters::updateOrCreate(
+                        ['produk_buku_id' => $row->produk_buku_id],
+                        [
+                            'total_voters' => $row->total_voters,
+                            'average_rating' => round($row->average_rating, 2),
+                        ]
+                    );
+                }
+            });
     }
 }

@@ -11,15 +11,17 @@ class RatingSummaryService
     /**
      * Create a new class instance.
      */
-    public function submit(int $userId, int $produkId, int $rating){
+    public function submit(int $userId, int $produkId, int $rating)
+    {
         // INi untuk rule user vote 34 jam
         DB::transaction(function () use ($userId, $produkId, $rating) {
             $lastRating = RatingUser::where('user_id', $userId)
+                ->where('produk_buku_id', $produkId)
                 ->latest('created_at')
                 ->first();
 
             if ($lastRating && now()->diffInHours($lastRating->created_at) < 24) {
-                throw new \Exception(
+                throw new \RuntimeException(
                     'Kamu harus menunggu 24 jam sebelum memberi rating lagi.'
                 );
             }
@@ -32,27 +34,18 @@ class RatingSummaryService
             ]);
 
             //
-            $this->recalculate($produkId);
+            $this->incrementalUpdate($produkId, $rating);
         });
     }
 
-    private function recalculate(int $produkId){
-        $query = RatingUser::where('produk_buku_id', $produkId);
-
-        $avg = round($query->avg('rating'), 2);
-        $totalRating = $query->count();
-        $totalVoter = $query->distinct('user_id')->count('user_id');
-
-        $avg7days = RatingUser::where('produk_buku_id', $produkId)
-            ->where('created_at', '>=', now()->subDays(7))
-            ->avg('rating');
-
+    private function incrementalUpdate(int $produkId, int $rating)
+    {
         DataVoters::updateOrCreate(
             ['produk_buku_id' => $produkId],
             [
-                'avg_rating' => $avg,
-                'total_voters' => $totalVoter,
-                'avg_7_days' => round($avg7days ?? 0, 2),
+                'total_voters' => DB::raw('total_voters + 1'),
+                'total_rating_sum' => DB::raw("total_rating_sum + {$rating}"),
+                'avg_rating' => DB::raw('(total_rating_sum)')
             ]
         );
     }

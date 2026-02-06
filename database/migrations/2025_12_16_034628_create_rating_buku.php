@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('produk_buku_id')->constrained('produk_bukus')->onDelete('cascade');
             $table->tinyInteger('rating');
-            $table->unique(['user_id', 'produk_buku_id']);
+            $table->index(['user_id', 'produk_buku_id']);
             $table->timestamps();
         });
     }

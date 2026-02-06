@@ -14,9 +14,10 @@ return new class extends Migration
         Schema::create('data_voters', function (Blueprint $table) {
             $table->id();
             $table->foreignId('produk_buku_id')->constrained('produk_bukus')->onDelete('cascade');
-            $table->unsignedBigInteger('total_voters');
-            $table->decimal('avg_rating', 3, 2);
-            $table->decimal('avg_7_days', 3, 2);
+            $table->unsignedBigInteger('total_voters')->default(0);
+            $table->unsignedBigInteger('total_rating_sum')->default(0);
+            $table->decimal('avg_rating', 4, 2)->default(0);
+            $table->decimal('avg_7_days', 4, 2)->default(0);
             $table->timestamps();
         });
     }

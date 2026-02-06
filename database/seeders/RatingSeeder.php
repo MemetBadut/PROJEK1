@@ -18,25 +18,40 @@ class RatingSeeder extends Seeder
      */
     public function run()
     {
-        $service = app(\App\Service\RatingSummaryService::class);
+        $totalSize = 500000;
+        $batchSize = 5000;
 
-        $users = User::pluck('id');
-        $books = ProdukBuku::pluck('id');
+        $userId = User::pluck('id')->toArray();
+        $produkBukuId = ProdukBuku::pluck('id')->toArray();
+        $fake = fake();
+        $now = now();
+        $ratings = [];
 
-        foreach ($users as $userId) {
-            $randomBooks = $books->random(rand(3, 10));
+        for ($i = 0; $i < $totalSize; $i++) {
+            $ratings[] = [
+                'user_id' => $userId[array_rand($userId)],
+                'produk_buku_id' => $produkBukuId[array_rand($produkBukuId)],
+                'rating' => rand(2, 10),
+                'created_at' => $fake->dateTimeBetween('-6 months'),
+                'updated_at' => $now,
+            ];
 
-            foreach ($randomBooks as $bookId) {
-                try {
-                    $service->submit(
-                        $userId,
-                        $bookId,
-                        rand(1, 5)
-                    );
-                } catch (\Exception $e) {
-                    continue;
-                }
+            if (($i + 1) % $batchSize === 0) {
+                RatingUser::upsert(
+                    $ratings,
+                    ['user_id', 'produk_buku_id'],
+                    ['rating', 'updated_at']
+                );
+                $ratings = [];
             }
+        }
+
+        if (!empty($ratings)) {
+            RatingUser::upsert(
+                $ratings,
+                ['user_id', 'produk_buku_id'],
+                ['rating', 'updated_at']
+            );
         }
     }
 }
