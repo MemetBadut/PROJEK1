@@ -38,6 +38,10 @@ class ProdukBuku extends Model
         return $this->belongsTo(PublisherBuku::class, '');
     }
 
+    public function ratings(){
+        return $this->hasMany(RatingUser::class, 'produk_buku_id');
+    }
+
     public function scopeSearch($query, $keyword)
     {
         return $query->where('nama_buku', 'like', "%{$keyword}%")
@@ -68,6 +72,26 @@ class ProdukBuku extends Model
             ->with([
                 'kategoriBuku:id,kategori_buku',
                 'penulisBuku:id,nama_penulis'
-            ]);
+            ])
+            ->withCount('ratings as total_voters')
+            ->withAvg('ratings as avg_rating', 'rating');
     }
+
+    public function scopeTotalRate($query, $vote){
+        return match($vote){
+            'most' => $query->orderBy('total_voters', 'desc'),
+            'least' => $query->orderBy('total_voters', 'asc'),
+            default => $query
+        };
+    }
+
+    public function scopeAlphabet($query, $alpha){
+        return match($alpha){
+            'name_asc' => $query->orderBy('nama_buku', 'asc'),
+            'name_desc' => $query->orderBy('nama_buku', 'desc'),
+            default => $query
+        };
+    }
+
+
 }

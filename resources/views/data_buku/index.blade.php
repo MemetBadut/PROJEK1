@@ -9,9 +9,19 @@
     <div class="overflow-x-auto ">
         <div class="max-w-6xl mx-auto">
             <table class="w-full">
-                <select name="" id="">
+                <form action="{{ route('home') }}" method="GET">
+                    <select name="sorting" id="sorting" onchange="this.form.submit()">
+                        <option value="">Semua Status</option>
+                        <option value="name_asc" {{ request('sorting') == 'name_asc' ? 'selected' : '' }}>A-Z</option>
+                        <option value="name_desc" {{ request('sorting') == 'name_desc' ? 'selected' : '' }}>Z-A</option>
+                        <option value="most" {{ request('sorting') == 'most' ? 'selected' : '' }}>Rating Tertinggi
+                        </option>
+                        <option value="least" {{ request('sorting') == 'least' ? 'selected' : '' }}>Rating Terendah
+                        </option>
+                        <option value="status" {{ request('sorting') == 'status' ? 'selected' : '' }}>Status</option>
+                    </select>
+                </form>
 
-                </select>
                 <thead class="bg-gray-100">
                     <tr>
                         <th class="px-6 py-4 text-center ">Judul Buku</th>
@@ -32,15 +42,11 @@
                                 {{ $buku->penulisBuku->nama_penulis }}
                             </td>
                             <td class="px-6 py-4 text-justify">
-                                {{
-                                    $buku->kategoriBuku->isNotEmpty()
-                                    ? $buku->kategoriBuku->pluck('kategori_buku')->implode(', ')
-                                    : '-'
-                                    }}
+                                {{ $buku->kategoriBuku->isNotEmpty() ? $buku->kategoriBuku->pluck('kategori_buku')->implode(', ') : '-' }}
                             </td>
                             <td class="px-6 py-4 text-justify">{{ $buku->isbn }}</td>
-                            <td class="px-6 py-4 text-justify">{{ $buku->rating_users }}/10</td>
-                            <td class="px-6 py-4 text-justify">{{ $buku->lokasi_toko }}</td>
+                            <td class="px-6 py-4 text-justify">{{ $buku->avg_rating }}/10</td>
+                            <td class="px-6 py-4 text-justify">{{ $buku->total_voters }}</td>
                         </tr>
                     @endforeach
                 </tbody>

@@ -16,18 +16,27 @@ class RatingSeeder extends Seeder
     /**
      * Run the database seeds.
      */
-    public function run(){
-        $user = User::pluck('id')->all();
-        $buku = ProdukBuku::pluck('id')->all();
+    public function run()
+    {
+        $service = app(\App\Service\RatingSummaryService::class);
 
-        foreach(range(1, 500_000) as $i){
-            RatingUser::create([
-                'user_id' => fake()->randomElement($user),
-                'produk_buku_id' => fake()->randomElement($buku),
-                'rating' => rand(1, 5),
-                'created_at' =>now()->subDays(rand(0, 60)),
-                'updated_at' => now(),
-            ]);
+        $users = User::pluck('id');
+        $books = ProdukBuku::pluck('id');
+
+        foreach ($users as $userId) {
+            $randomBooks = $books->random(rand(3, 10));
+
+            foreach ($randomBooks as $bookId) {
+                try {
+                    $service->submit(
+                        $userId,
+                        $bookId,
+                        rand(1, 5)
+                    );
+                } catch (\Exception $e) {
+                    continue;
+                }
+            }
         }
     }
 }

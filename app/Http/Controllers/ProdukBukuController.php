@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\ProdukBuku;
+use App\Models\RatingUser;
 use Illuminate\Http\Request;
 
 class ProdukBukuController extends Controller
@@ -10,10 +11,18 @@ class ProdukBukuController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $data_buku = ProdukBuku::listBooks()->paginate(20);
-
+        $data_buku = ProdukBuku::listBooks()
+        ->when($request->filled('sorting'), function ($q) use ($request){
+            match($request->sorting){
+                'most', 'least' => $q->totalRate($request->sorting),
+                'name_asc', 'name_desc' => $q->alphabet($request->sorting),
+                default => $q
+            };
+        })
+        ->paginate(20)
+        ->withQueryString();
         return view('data_buku.index', compact('data_buku'));
     }
 
