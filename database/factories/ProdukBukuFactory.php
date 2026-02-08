@@ -18,20 +18,34 @@ class ProdukBukuFactory extends Factory
      *
      * @return array<string, mixed>
      */
-    public function definition(): array
-    {
-        return [
-            'nama_buku' => fake()->sentence(3),
-            'penulis_bukus_id' => PenulisBuku::pluck('id')->random(),
-            'publisher_id' => PublisherBuku::pluck('id')->random(),
-            'isbn' => fake()->isbn10(),
-            'created_at' => fake()
-                ->dateTimeBetween(' -3 years', 'now')
-                ->format('Y-m-d H:i:s'),
+public function definition(): array
+{
+    static $penulisIds;
+    static $publisherIds;
 
-            'updated_at' => fake()
-                ->dateTimeBetween('created_at', 'now')
-                ->format('Y-m-d H:i:s'),
-        ];
-    }
+    $penulisIds ??= PenulisBuku::pluck('id')->toArray();
+    $publisherIds ??= PublisherBuku::pluck('id')->toArray();
+
+    $status = fake()->randomElement(
+        array_merge(
+            array_fill(0, 80, 'tersedia'),
+            array_fill(0, 15, 'terjual'),
+            array_fill(0, 5, 'dipinjam'),
+        )
+    );
+
+    $createdAt = fake()->dateTimeBetween('-3 years', 'now');
+
+    return [
+        'nama_buku' => fake()->sentence(3),
+        'penulis_bukus_id' => fake()->randomElement($penulisIds),
+        'isbn' => fake()->isbn10(),
+        'publisher_id' => fake()->randomElement($publisherIds),
+        'status_buku' => $status,
+        'rating_enabled' => $status === 'active',
+        'created_at' => $createdAt,
+        'updated_at' => fake()->dateTimeBetween($createdAt, 'now'),
+    ];
+}
+
 }

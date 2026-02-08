@@ -13,6 +13,7 @@ class ProdukBuku extends Model
         'penulis_bukus_id',
         'isbn',
         'publisher_id',
+        'status_buku',
         'created_at',
         'updated_at'
     ];
