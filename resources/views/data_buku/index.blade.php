@@ -21,7 +21,11 @@
                             </option>
                             <option value="least" {{ request('sorting') == 'least' ? 'selected' : '' }}>Rating Terendah
                             </option>
-                            <option value="status" {{ request('sorting') == 'status' ? 'selected' : '' }}>Status
+                            <option value="available" {{ request('sorting') == 'available' ? 'selected' : '' }}>Tersedia
+                            </option>
+                            <option value="reserved" {{ request('sorting') == 'reserved' ? 'selected' : '' }}>Dipinjam
+                            </option>
+                            <option value="rented" {{ request('sorting') == 'rented' ? 'selected' : '' }}>Tersimpan
                             </option>
                         </select>
 

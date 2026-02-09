@@ -10,7 +10,6 @@
             <table class="w-full">
                 <thead class="bg-gray-100">
                     <tr>
-                        <th class="px-6 py-4 text-center">NO</th>
                         <th class="px-6 py-4 text-center">Nama Penulis</th>
                         <th class="px-6 py-4 text-center">Karya Terbaik</th>
                         <th class="px-6 py-4 text-center">Karya Terburuk</th>
@@ -20,15 +19,12 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @php
+                    {{-- @php
                         $i = 1;
-                    @endphp
+                    @endphp --}}
                     @foreach ($data_authors as $author)
                         <tr>
-                            <td class="px-6 py-4 text-center">{{ $i }}</td>
                             <td class="px-6 py-4 text-justify">{{ $author->nama_penulis }}</td>
-                            <td class="px-6 py-4 text-justify">{{ $author->best_work->nama_buku ?? '-' }}</td>
-                            <td class="px-6 py-4 text-justify">{{ $author->worst_work->nama_buku ?? '-' }}</td>
                             <td class="px-6 py-4 text-justify">{{ number_format($author->avg_rating) }}</td>
                             <td class="px-6 py-4 text-justify"></td>
                             <td>
@@ -43,9 +39,9 @@
                                 </button>
                             </td>
                         </tr>
-                        @php
+                        {{-- @php
                             $i++;
-                         @endphp
+                         @endphp --}}
                     @endforeach
                 </tbody>
             </table>

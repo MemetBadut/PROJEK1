@@ -12,26 +12,31 @@ class AuthorBukuController extends Controller
      */
     public function index()
     {
-        $data_authors = PenulisBuku::with([
-            'produkBuku' => function ($q) {
-                $q->withAvg('ratingUser', 'score');
-            }
-        ])->paginate(100);
+        // $data_authors = PenulisBuku::with([
+        //     'produkBuku' => function ($q) {
+        //         $q->withAvg('ratings', 'score');
+        //     }
+        // ])->paginate(100);
 
-        // hitung manual karena ini REPORT, bukan kolom DB
-        $data_authors->getCollection()->transform(function ($author) {
-            $author->best_work = $author->produkBuku
-                ->sortByDesc('rating_user_avg_score')
-                ->first();
+        // // hitung manual karena ini REPORT, bukan kolom DB
+        // $data_authors->getCollection()->transform(function ($author) {
+        //     $author->best_work = $author->produkBuku
+        //         ->sortByDesc('rating_user_avg_score')
+        //         ->first();
 
-            $author->worst_work = $author->produkBuku
-                ->sortBy('rating_user_avg_score')
-                ->first();
+        //     $author->worst_work = $author->produkBuku
+        //         ->sortBy('rating_user_avg_score')
+        //         ->first();
 
-            $author->avg_rating = $author->produkBuku
-                ->avg('rating_user_avg_score');
-            return $author;
-        });
+        //     $author->avg_rating = $author->produkBuku
+        //         ->avg('rating_user_avg_score');
+        //     return $author;
+        // });
+
+        $data_authors = PenulisBuku::popularity()
+            ->select('id', 'nama_penulis')
+            ->with('produkBuku:id,penulis_buku_id,nama_buku')
+            ->paginate(10);
 
         return view('famous_author.index', compact('data_authors'));
     }

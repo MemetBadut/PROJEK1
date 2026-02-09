@@ -39,7 +39,7 @@
                         <li>
                             <a href="{{ route('author.index') }}"
                                 class="block py-2 px-3 text-heading rounded hover:bg-neutral-tertiary md:hover:bg-transparent md:border-0 md:hover:text-fg-brand md:p-0
-                            md:dark:hover:bg-transparent">Voting
+                            md:dark:hover:bg-transparent">
                                 Author</a>
                         </li>
                     @elseif(request()->routeIs('voting.index'))
@@ -65,7 +65,8 @@
                         <li>
                             <a href="{{ route('author.index') }}"
                                 class="block py-2 px-3 text-heading rounded hover:bg-neutral-tertiary md:hover:bg-transparent md:border-0 md:hover:text-fg-brand md:p-0
-                            md:dark:hover:bg-transparent">Vote Author</a>
+                            md:dark:hover:bg-transparent">Vote
+                                Author</a>
                         </li>
                     @endif
                 </ul>

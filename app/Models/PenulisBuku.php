@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class PenulisBuku extends Model
 {
@@ -16,16 +17,6 @@ class PenulisBuku extends Model
         return $this->hasMany(ProdukBuku::class, 'penulis_buku_id', 'id');
     }
 
-    public function best_work()
-    {
-        return $this->hasOne(ProdukBuku::class)->ofMany('avg_rating', 'max');
-    }
-
-    public function worst_work()
-    {
-        return $this->hasOne(ProdukBuku::class)->ofMany('avg_rating', 'min');
-    }
-
     public function ratings()
     {
         return $this->hasManyThrough(
@@ -34,5 +25,17 @@ class PenulisBuku extends Model
             'penulis_buku_id',
             'produk_buku_id'
         );
+    }
+
+    public function scopePopularity($query, int $minRating = 5){
+        return $query
+        ->join('produk_bukus', 'produk_bukus.penulis_buku_id', '=', 'penulis_buku_id')
+        ->join('rating_users', 'rating_users.produk_buku_id', '=', 'produk_buku_id')
+        ->where('rating_users.rating', '>', $minRating)
+        ->select(
+            'nama_penulis.*',
+            DB::raw('COUNT(rating_users.id) as popularity')
+        )
+        ->groupBy('penulis_buku.id');
     }
 }

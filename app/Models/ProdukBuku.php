@@ -70,7 +70,7 @@ class ProdukBuku extends Model
         return match ($status) {
             'available' => $query->orderBy('tersedia'),
             'rented' => $query->orderBy('dipinjam'),
-            'reserved' => $query->orderBy('dipesan'),
+            'reserved' => $query->orderBy('tersimpan'),
             default => $query
         };
     }
