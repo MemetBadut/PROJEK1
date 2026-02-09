@@ -2,10 +2,11 @@
 
 namespace Database\Seeders;
 
-use App\Models\KategoriBuku;
 use App\Models\ProdukBuku;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\KategoriBuku;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 class TabelPivotBukuKategori extends Seeder
 {
@@ -15,19 +16,28 @@ class TabelPivotBukuKategori extends Seeder
     public function run(): void
     {
         $kategoriIds = KategoriBuku::pluck('id')->toArray();
-        $bukuList = ProdukBuku::all();
+        $bukuList = ProdukBuku::pluck('id');
+        $relationToInsert = [];
 
-        foreach($bukuList as $buku){
-            if(count($kategoriIds) === 0){
-                dd('Kategori Kosong');
-            }
-
+        foreach ($bukuList as $bukuId) {
             $randomKategori = collect($kategoriIds)
-            ->shuffle()
-            ->take(5)
-            ->toArray();
+                ->shuffle()
+                ->take(5);
 
-            $buku->kategoriBuku()->sync($randomKategori);
+            foreach ($randomKategori as $kategoriId) {
+                $relationToInsert[] = [
+                    'produk_buku_id' => $bukuId,
+                    'kategori_buku_id' => $kategoriId,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ];
+            }
         }
+
+        collect($relationToInsert)
+            ->chunk(500)
+            ->each(function ($chunk) {
+                DB::table('buku_kategori_pivot')->insert($chunk->toArray());
+            });
     }
 }

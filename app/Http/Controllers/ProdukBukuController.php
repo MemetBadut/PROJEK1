@@ -48,9 +48,13 @@ class ProdukBukuController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(ProdukBuku $buku)
     {
-        //
+        $buku = ProdukBuku::listBooks()
+        ->whereKey($buku->id)
+        ->firstOrFail();
+
+        return view('data_buku.show', compact('buku'));
     }
 
     /**

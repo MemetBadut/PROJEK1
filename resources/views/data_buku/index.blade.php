@@ -12,7 +12,7 @@
                 <form action="{{ route('home') }}" method="GET" class="flex justify-between items-center">
                     <div class="flex items-center gap-2">
                         <select name="sorting" id="sorting" onchange="this.form.submit()">
-                            <option value="">Semua Status</option>
+                            <option value="">Semua</option>
                             <option value="name_asc" {{ request('sorting') == 'name_asc' ? 'selected' : '' }}>A-Z
                             </option>
                             <option value="name_desc" {{ request('sorting') == 'name_desc' ? 'selected' : '' }}>Z-A
@@ -54,8 +54,16 @@
                                 {{ $buku->kategoriBuku->isNotEmpty() ? $buku->kategoriBuku->pluck('kategori_buku')->implode(', ') : '-' }}
                             </td>
                             <td class="px-6 py-4 text-justify">{{ $buku->isbn }}</td>
-                            <td class="px-6 py-4 text-justify">{{ $buku->avg_rating }}/10</td>
+                            <td class="px-6 py-4 text-justify">{{ number_format($buku->avg_rating, 1, '.', ) }}/10</td>
                             <td class="px-6 py-4 text-justify">{{ $buku->total_voters }}</td>
+                            <td class="px-6 py-4 text-justify hover:underline">
+                                @if ($buku->status_buku === 'tersedia')
+                                    <a href="{{ route('detail_book', $buku->slug) }}">{{ $buku->status_buku }}</a>
+                                @else
+                                    {{ $buku->status_buku }}
+                                @endif
+                            </td>
+
                         </tr>
                     @endforeach
                 </tbody>

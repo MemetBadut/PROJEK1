@@ -14,6 +14,7 @@ class ProdukBuku extends Model
         'isbn',
         'publisher_id',
         'status_buku',
+        'slug',
         'created_at',
         'updated_at'
     ];
@@ -37,8 +38,9 @@ class ProdukBuku extends Model
 
     public function publisherBuku()
     {
-        return $this->belongsTo(PublisherBuku::class, '');
+        return $this->belongsTo(PublisherBuku::class, 'id');
     }
+
 
     public function ratings()
     {
@@ -77,10 +79,11 @@ class ProdukBuku extends Model
 
     public function scopeListBooks($query)
     {
-        return $query->select('id', 'nama_buku', 'penulis_bukus_id', 'publisher_id', 'isbn')
+        return $query->select('id', 'nama_buku', 'penulis_bukus_id', 'publisher_id', 'status_buku', 'slug','isbn')
             ->with([
                 'kategoriBuku:id,kategori_buku',
-                'penulisBuku:id,nama_penulis'
+                'penulisBuku:id,nama_penulis',
+                'publisherBuku:id,nama_publisher'
             ])
             ->withCount('ratings as total_voters')
             ->withAvg('ratings as avg_rating', 'rating');

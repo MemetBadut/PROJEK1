@@ -22,6 +22,7 @@ public function definition(): array
 {
     static $penulisIds;
     static $publisherIds;
+    $title = fake()->sentence(3);
 
     $penulisIds ??= PenulisBuku::pluck('id')->toArray();
     $publisherIds ??= PublisherBuku::pluck('id')->toArray();
@@ -29,7 +30,7 @@ public function definition(): array
     $status = fake()->randomElement(
         array_merge(
             array_fill(0, 80, 'tersedia'),
-            array_fill(0, 15, 'terjual'),
+            array_fill(0, 15, 'tersimpan'),
             array_fill(0, 5, 'dipinjam'),
         )
     );
@@ -37,12 +38,13 @@ public function definition(): array
     $createdAt = fake()->dateTimeBetween('-3 years', 'now');
 
     return [
-        'nama_buku' => fake()->sentence(3),
+        'nama_buku' => $title,
         'penulis_bukus_id' => fake()->randomElement($penulisIds),
         'isbn' => fake()->isbn10(),
         'publisher_id' => fake()->randomElement($publisherIds),
         'status_buku' => $status,
-        'rating_enabled' => $status === 'active',
+        'rating_enabled' => $status === 'tersedia',
+        'slug' => str($title)->slug(),
         'created_at' => $createdAt,
         'updated_at' => fake()->dateTimeBetween($createdAt, 'now'),
     ];

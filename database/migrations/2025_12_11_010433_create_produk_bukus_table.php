@@ -17,7 +17,8 @@ return new class extends Migration
             $table->foreignId('penulis_bukus_id')->constrained('penulis_bukus')->onDelete('cascade');
             $table->string('isbn');
             $table->foreignId('publisher_id')->constrained('publisher')->onDelete('cascade');
-            $table->enum('status_buku',['tersedia', 'terjual', 'dipinjam'])->default('tersedia');
+            $table->enum('status_buku',['tersedia', 'tersimpan', 'dipinjam'])->default('tersedia');
+            $table->string('slug');
             $table->boolean('rating_enabled')->default(true);
             $table->timestamps();
         });

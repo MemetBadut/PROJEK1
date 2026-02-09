@@ -10,7 +10,7 @@ Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
 
 Route::get('/', [ProdukBukuController::class, 'index'])->name('home');
-Route::get('/buku/{slug}', [ProdukBukuController::class, 'show'])->name('detail_book');
+Route::get('/buku/{buku:slug}', [ProdukBukuController::class, 'show'])->name('detail_book');
 
 Route::middleware('auth')->group(function (): void {
     Route::get('/voting', [InputRatingController::class, 'index'])->name('voting.index');
