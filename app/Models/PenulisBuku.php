@@ -13,7 +13,7 @@ class PenulisBuku extends Model
 
     public function produkBuku()
     {
-        return $this->hasMany(ProdukBuku::class, 'penulis_bukus_id', 'id');
+        return $this->hasMany(ProdukBuku::class, 'penulis_buku_id', 'id');
     }
 
     public function best_work()
@@ -31,7 +31,7 @@ class PenulisBuku extends Model
         return $this->hasManyThrough(
             RatingUser::class,
             ProdukBuku::class,
-            'penulis_bukus_id',
+            'penulis_buku_id',
             'produk_buku_id'
         );
     }

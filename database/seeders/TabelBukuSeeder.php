@@ -28,7 +28,7 @@ class TabelBukuSeeder extends Seeder
             $rows = ProdukBuku::factory()
                 ->count(min($batch, $total - $i))
                 ->state(fn() => [
-                    'penulis_bukus_id' => fake()->randomElement($penulisIds),
+                    'penulis_buku_id' => fake()->randomElement($penulisIds),
                     'publisher_id'    => fake()->randomElement($publisherIds),
                 ])
                 ->make()

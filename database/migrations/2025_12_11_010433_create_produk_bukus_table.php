@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('produk_bukus', function (Blueprint $table) {
             $table->id();
             $table->string('nama_buku');
-            $table->foreignId('penulis_bukus_id')->constrained('penulis_bukus')->onDelete('cascade');
+            $table->foreignId('penulis_buku_id')->constrained('penulis_bukus')->onDelete('cascade');
             $table->string('isbn');
             $table->foreignId('publisher_id')->constrained('publisher')->onDelete('cascade');
             $table->enum('status_buku',['tersedia', 'tersimpan', 'dipinjam'])->default('tersedia');

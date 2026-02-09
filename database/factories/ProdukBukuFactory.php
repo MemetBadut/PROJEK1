@@ -39,7 +39,7 @@ public function definition(): array
 
     return [
         'nama_buku' => $title,
-        'penulis_bukus_id' => fake()->randomElement($penulisIds),
+        'penulis_buku_id' => fake()->randomElement($penulisIds),
         'isbn' => fake()->isbn10(),
         'publisher_id' => fake()->randomElement($publisherIds),
         'status_buku' => $status,

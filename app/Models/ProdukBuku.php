@@ -10,7 +10,7 @@ class ProdukBuku extends Model
     use HasFactory;
     protected $fillable = [
         'nama_buku',
-        'penulis_bukus_id',
+        'penulis_buku_id',
         'isbn',
         'publisher_id',
         'status_buku',
@@ -23,7 +23,7 @@ class ProdukBuku extends Model
 
     public function penulisBuku()
     {
-        return $this->belongsTo(PenulisBuku::class, 'penulis_bukus_id', 'id');
+        return $this->belongsTo(PenulisBuku::class, 'penulis_buku_id', 'id');
     }
 
     public function kategoriBuku()
@@ -52,7 +52,12 @@ class ProdukBuku extends Model
         return $query->where(function ($q) use ($keyword) {
             $q->where('nama_buku', 'like', "%{$keyword}%")
                 ->orWhere('isbn', 'like', "%{$keyword}%")
-                ->orWhere('publisher_id', 'like', "%{$keyword}%");
+                ->orWhereHas('penulisBuku', function($qq) use ($keyword){
+                    $qq->where('nama_penulis', 'like', "%{$keyword}%");
+                })
+                ->orWhereHas('publisherBuku', function($qq) use ($keyword){
+                    $qq->where('nama_publisher', 'like', "%{$keyword}%");
+                });
         });
 
         if(is_numeric($keyword)){
@@ -79,7 +84,7 @@ class ProdukBuku extends Model
 
     public function scopeListBooks($query)
     {
-        return $query->select('id', 'nama_buku', 'penulis_bukus_id', 'publisher_id', 'status_buku', 'slug','isbn')
+        return $query->select('id', 'nama_buku', 'penulis_buku_id', 'publisher_id', 'status_buku', 'slug','isbn')
             ->with([
                 'kategoriBuku:id,kategori_buku',
                 'penulisBuku:id,nama_penulis',
