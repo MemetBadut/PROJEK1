@@ -17,6 +17,10 @@ class PenulisBuku extends Model
         return $this->hasMany(ProdukBuku::class, 'penulis_buku_id', 'id');
     }
 
+    public function stats(){
+        return $this->hasOne(AuthorStats::class, 'author_id');
+    }
+
     public function ratings()
     {
         return $this->hasManyThrough(

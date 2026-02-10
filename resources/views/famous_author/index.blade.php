@@ -1,5 +1,5 @@
 <x-app>
-    <div class="ml-2.5 text-center mt-5">
+    <div class="ml-2.5 text-center">
         <h2 class="font-bold text-2xl">Vote Author</h2>
         <p class="">Vote author favorite kamu 🤩</p>
         <br>
@@ -11,8 +11,6 @@
                 <thead class="bg-gray-100">
                     <tr>
                         <th class="px-6 py-4 text-center">Nama Penulis</th>
-                        <th class="px-6 py-4 text-center">Karya Terbaik</th>
-                        <th class="px-6 py-4 text-center">Karya Terburuk</th>
                         <th class="px-6 py-4 text-center">Voter Author</th>
                         <th class="px-6 py-4 text-center">Aksi</th>
                         <th class="px-6 py-4 "></th>
@@ -25,7 +23,7 @@
                     @foreach ($data_authors as $author)
                         <tr>
                             <td class="px-6 py-4 text-justify">{{ $author->nama_penulis }}</td>
-                            <td class="px-6 py-4 text-justify">{{ number_format($author->avg_rating) }}</td>
+                            <td class="px-6 py-4 text-justify">{{ number_format($author->rating) }}</td>
                             <td class="px-6 py-4 text-justify"></td>
                             <td>
                                 <button type="submit" class="cursor-pointer">

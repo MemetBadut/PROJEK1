@@ -12,6 +12,9 @@ class DataVoters extends Model
         'avg_rating',
         'avg_7_days'
     ];
+
+    protected $table = 'data_voters';
+
     public function ratingBuku(){
         return $this->belongsTo(RatingUser::class, 'rating_user_id', 'id');
     }
