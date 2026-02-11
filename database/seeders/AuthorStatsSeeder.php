@@ -12,6 +12,11 @@ class AuthorStatsSeeder extends Seeder
      */
     public function run(): void
     {
-        //
+        $service = new \App\Service\AuthorStatsService();
+        $authorId = \App\Models\PenulisBuku::pluck("id");
+
+        foreach ($authorId as $id) {
+            $service->rebuildForAuthor($id);
+        }
     }
 }

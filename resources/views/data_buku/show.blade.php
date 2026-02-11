@@ -1,4 +1,3 @@
-{{-- resources/views/data_buku/show.blade.php --}}
 <x-app>
     <x-slot:header>
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
@@ -26,7 +25,7 @@
                     </div>
                     <div>
                         <p class="text-gray-500">Tanggal Publish</p>
-                        <p class="font-medium">{{ $buku->tanggal_publish7 ?? '-' }}</p>
+                        <p class="font-medium">{{ $buku->tanggal_publish ?? '-' }}</p>
                     </div>
                 </div>
 

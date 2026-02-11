@@ -30,6 +30,7 @@ class DatabaseSeeder extends Seeder
             RatingSeeder::class,
             DummyVoterSeeder::class,
             TabelPivotBukuKategori::class,
+            AuthorStatsSeeder::class,
         ]);
     }
 }

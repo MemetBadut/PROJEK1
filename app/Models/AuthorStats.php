@@ -16,13 +16,15 @@ class AuthorStats extends Model
         'total_voters',
         'voters_gt_5',
         'avg_rating',
+        'rating_30d',
         'rating_prev_30d',
         'popularity_score'
     ];
 
-    protected $table = ['author_stats'];
+    protected $table = 'author_stats';
 
-    public function author(){
+    public function author()
+    {
         return $this->belongsTo(PenulisBuku::class, 'penulis_buku_id');
     }
 }

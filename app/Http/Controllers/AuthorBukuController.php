@@ -13,14 +13,9 @@ class AuthorBukuController extends Controller
     public function index()
     {
         $data_authors = PenulisBuku::query()
-            ->withCount([
-                'produkBuku as popularity' => function ($q) {
-                    $q->whereHas('ratings', function ($r) {
-                        $r->where('rating', '>', 5);
-                    });
-                }
-            ])
-            ->orderBy('popularity')
+            ->join('author_stats', 'author_stats.penulis_buku_id', '=', 'penulis_bukus.id')
+            ->orderBy('author_stats.popularity_score', 'desc')
+            ->select('penulis_bukus.*', 'author_stats.popularity_score')
             ->paginate(10);
 
         return view('famous_author.index', compact('data_authors'));

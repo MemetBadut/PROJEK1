@@ -17,8 +17,9 @@ class PenulisBuku extends Model
         return $this->hasMany(ProdukBuku::class, 'penulis_buku_id', 'id');
     }
 
-    public function stats(){
-        return $this->hasOne(AuthorStats::class, 'author_id');
+    public function stats()
+    {
+        return $this->hasOne(AuthorStats::class, 'penulis_buku_id');
     }
 
     public function ratings()
@@ -31,15 +32,16 @@ class PenulisBuku extends Model
         );
     }
 
-    public function scopePopularity($query, int $minRating = 5){
+    public function scopePopularity($query, int $minRating = 5)
+    {
         return $query
-        ->join('produk_bukus', 'produk_bukus.penulis_buku_id', '=', 'penulis_buku_id')
-        ->join('rating_users', 'rating_users.produk_buku_id', '=', 'produk_buku_id')
-        ->where('rating_users.rating', '>', $minRating)
-        ->select(
-            'nama_penulis.*',
-            DB::raw('COUNT(rating_users.id) as popularity')
-        )
-        ->groupBy('penulis_buku.id');
+            ->join('produk_bukus', 'produk_bukus.penulis_buku_id', '=', 'penulis_buku_id')
+            ->join('rating_users', 'rating_users.produk_buku_id', '=', 'produk_buku_id')
+            ->where('rating_users.rating', '>', $minRating)
+            ->select(
+                'nama_penulis.*',
+                DB::raw('COUNT(rating_users.id) as popularity')
+            )
+            ->groupBy('penulis_buku.id');
     }
 }
