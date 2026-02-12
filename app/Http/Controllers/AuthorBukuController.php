@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\PenulisBuku;
+use App\Models\ProdukBuku;
 use Illuminate\Http\Request;
 
 class AuthorBukuController extends Controller
@@ -15,8 +16,24 @@ class AuthorBukuController extends Controller
         $data_authors = PenulisBuku::query()
             ->join('author_stats', 'author_stats.penulis_buku_id', '=', 'penulis_bukus.id')
             ->orderBy('author_stats.popularity_score', 'desc')
-            ->select('penulis_bukus.*', 'author_stats.popularity_score')
+            ->select('penulis_bukus.*', 'author_stats.popularity_score', 'author_stats.total_voters')
             ->paginate(10);
+
+        $data_authors->getCollection()->transform(function ($author) {
+            $author->best_book = ProdukBuku::where('penulis_buku_id', $author->id)
+                ->withAvg('ratings as avg_rating', 'ratings')
+                ->having('avg_rating', '>', 0)
+                ->orderByDesc('avg_rating')
+                ->first();
+
+            $author->worst_book = ProdukBuku::where('penulis_buku_id', $author->id)
+                ->withAvg('ratings as avg_rating', 'ratings')
+                ->having('avg_rating', '>', 0)
+                ->orderBy('avg_rating', 'asc')
+                ->first();
+
+            return $author;
+        });
 
         return view('famous_author.index', compact('data_authors'));
     }
@@ -47,8 +64,6 @@ class AuthorBukuController extends Controller
                 $q->select('id', 'penulis_buku_id', 'nama_buku');
             }
         ])->findOrFail($id);
-
-
 
         return view('famous_author.show', compact('data_author'));
     }

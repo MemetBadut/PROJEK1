@@ -11,21 +11,36 @@
                 <thead class="bg-gray-100">
                     <tr>
                         <th class="px-6 py-4 text-center">Nama Penulis</th>
-                        <th class="px-6 py-4 text-center">Voter Author</th>
+                        <th class="px-6 py-4 text-center">Total Ratings</th>
+                        <th class="px-6 py-4 text-center">Best Book</th>
+                        <th class="px-6 py-4 text-center">Worst Book</th>
                         <th class="px-6 py-4 text-center">Aksi</th>
-                        <th class="px-6 py-4 "></th>
                     </tr>
                 </thead>
                 <tbody>
-                    {{-- @php
-                        $i = 1;
-                    @endphp --}}
                     @foreach ($data_authors as $author)
                         <tr>
-                            <td class="px-6 py-4 text-justify">{{ $author->nama_penulis }}</td>
-                            <td class="px-6 py-4 text-justify">{{ number_format($author->rating) }}</td>
-                            <td class="px-6 py-4 text-justify"></td>
-                            <td>
+                            <td class="px-6 py-4">{{ $author->nama_penulis }}</td>
+                            <td class="px-6 py-4 text-center">{{ $author->total_voters ?? 0 }}</td>
+                            <td class="px-6 py-4">
+                                @if ($author->best_book)
+                                    {{ $author->best_book->nama_buku }}
+                                    <span class="text-green-600 text-xs">(⭐
+                                        {{ number_format($author->best_book->avg_rating, 1) }})</span>
+                                @else
+                                    <span class="text-gray-400">-</span>
+                                @endif
+                            </td>
+                            <td class="px-6 py-4">
+                                @if ($author->worst_book)
+                                    {{ $author->worst_book->nama_buku }}
+                                    <span class="text-red-500 text-xs">(⭐
+                                        {{ number_format($author->worst_book->avg_rating, 1) }})</span>
+                                @else
+                                    <span class="text-gray-400">-</span>
+                                @endif
+                            </td>
+                            <td class="px-6 py-4 text-center">
                                 <button type="submit" class="cursor-pointer">
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24"
                                         height="24" fill="currentColor">
@@ -37,9 +52,6 @@
                                 </button>
                             </td>
                         </tr>
-                        {{-- @php
-                            $i++;
-                         @endphp --}}
                     @endforeach
                 </tbody>
             </table>

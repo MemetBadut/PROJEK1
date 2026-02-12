@@ -18,8 +18,8 @@ class AuthorStatsService
             ->join('produk_bukus', 'produk_bukus.id', '=', 'rating_users.produk_buku_id')
             ->where('produk_bukus.penulis_buku_id', $authorId);
 
-        $voterGt5 = (clone $stats)->where('rating', '>', 5)->count();
-        $avgRating = (clone $stats)->avg('rating') ?? 0;
+        $voterGt5 = (clone $stats)->where('ratings', '>', 5)->count();
+        $avgRating = (clone $stats)->avg('ratings') ?? 0;
         $totalVotes = (clone $stats)->count();
 
         // Total books by this author
@@ -30,12 +30,19 @@ class AuthorStatsService
         // Avg rating last 30 days
         $rating30d = (clone $stats)
             ->where('rating_users.created_at', '>=', now()->subDays(30))
-            ->avg('rating') ?? 0;
+            ->avg('ratings') ?? 0;
 
         // Avg rating previous 30 days (30-60 days ago)
         $ratingPrev30d = (clone $stats)
             ->whereBetween('rating_users.created_at', [now()->subDays(60), now()->subDays(30)])
-            ->avg('rating');
+            ->avg('ratings');
+
+        if(empty($ratingPrev30d)){
+            $trending_score = 0;
+        }else{
+            $trending_score = ($rating30d - $ratingPrev30d) * log($totalVotes + 1);
+        }
+
 
         AuthorStats::updateOrCreate(
             ['penulis_buku_id' => $authorId],
@@ -47,6 +54,7 @@ class AuthorStatsService
                 'rating_30d' => round($rating30d, 2),
                 'rating_prev_30d' => $ratingPrev30d ? round($ratingPrev30d, 2) : null,
                 'popularity_score' => round($this->popularityScore($voterGt5, $avgRating), 2),
+                'trending_score' => round($trending_score, 2),
             ]
         );
     }

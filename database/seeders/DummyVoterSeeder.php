@@ -17,19 +17,19 @@ class DummyVoterSeeder extends Seeder
     public function run(): void
     {
         RatingUser::query()
-            ->selectRaw('produk_buku_id, COUNT(*) as total_voters, AVG(rating) as average_rating')
+            ->selectRaw('produk_buku_id, COUNT(*) as total_voters, AVG(ratings) as average_rating')
             ->groupBy('produk_buku_id')
             ->orderBy('produk_buku_id')
             ->chunk(500, function ($rows) {
+                $data = [];
                 foreach ($rows as $row) {
-                    DataVoters::updateOrCreate(
-                        ['produk_buku_id' => $row->produk_buku_id],
-                        [
-                            'total_voters' => $row->total_voters,
-                            'avg_rating' => round($row->average_rating, 2),
-                        ]
-                    );
+                    $data[] = [
+                        'produk_buku_id' => $row->produk_buku_id,
+                        'total_voters' => $row->total_voters,
+                        'avg_rating' => round($row->average_rating, 2),
+                    ];
                 }
+                DB::table('data_voters')->upsert($data, ['produk_buku_id'], ['total_voters', 'avg_rating']);
             });
     }
 }

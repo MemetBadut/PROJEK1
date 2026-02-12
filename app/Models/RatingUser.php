@@ -9,7 +9,7 @@ class RatingUser extends Model
     protected $fillable = [
         'user_id',
         'produk_buku_id',
-        'rating'
+        'ratings'
     ];
 protected $table = 'rating_users';
 

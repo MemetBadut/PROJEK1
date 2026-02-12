@@ -16,34 +16,34 @@
             <div class="bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
                 <form action="" class="space-y-6">
 
+                    {{-- Nama Author --}}
+                    <div class="space-y-2">
+                        <select id="author_id" name="author_id" class="form-control">
+                            <option value="">-- Select Author --</option>
+                            @foreach ($authors as $author)
+                                <option value="{{ $author->id }}">
+                                    {{ $author->nama_penulis }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+
                     <!-- Nama Buku -->
                     <div class="space-y-2">
                         <label for="nama_buku" class="block text-sm font-semibold text-gray-700 mb-2">
                             📖 Pilih Nama Buku
                         </label>
-                        <select name="nama_buku" id="nama_buku"
-                            class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200 bg-gray-50 hover:bg-white cursor-pointer">
-                            <option value="" disabled selected>Pilih buku...</option>
-                            <option value="buku1">Nama Buku 1</option>
-                            <option value="buku2">Nama Buku 2</option>
+                        <select id="produk_buku_id" name="produk_buku_id" class="form-control" disabled>
+                            <option value="">-- Select Book --</option>
                         </select>
                     </div>
 
                     <!-- Rating -->
-                    <div class="space-y-2">
-                        <label for="rating" class="block text-sm font-semibold text-gray-700 mb-2">
-                            ⭐ Berikan Rating
-                        </label>
-                        <select name="rating" id="rating"
-                            class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200 bg-gray-50 hover:bg-white cursor-pointer">
-                            <option value="" disabled selected>Pilih rating...</option>
-                            <option value="5">⭐⭐⭐⭐⭐ (5 - Sangat Bagus)</option>
-                            <option value="4">⭐⭐⭐⭐ (4 - Bagus)</option>
-                            <option value="3">⭐⭐⭐ (3 - Cukup)</option>
-                            <option value="2">⭐⭐ (2 - Kurang)</option>
-                            <option value="1">⭐ (1 - Tidak Bagus)</option>
-                        </select>
-                    </div>
+                    <select name="ratings" class="form-control">
+                        @for ($i = 1; $i <= 10; $i++)
+                            <option value="{{ $i }}">{{ $i }}</option>
+                        @endfor
+                    </select>
 
                     <!-- Submit Button -->
                     <button type="submit"
@@ -61,5 +61,37 @@
 
         </div>
     </div>
+
+    <script>
+        document.getElementById('author_id').addEventListener('change', function() {
+            const authorId = this.value;
+            const bookDropdown = document.getElementById('produk_buku_id');
+
+            bookDropdown.innerHTML = '<option value="">Loading...</option>';
+            bookDropdown.disabled = true;
+
+            if (!authorId) {
+                bookDropdown.innerHTML = '<option value="">-- Select Book --</option>';
+                return;
+            }
+
+            fetch(`/authors/${authorId}/books`)
+                .then(response => response.json())
+                .then(data => {
+                    let options = '<option value="">-- Select Book --</option>';
+
+                    data.forEach(book => {
+                        options += `<option value="${book.id}">${book.nama_buku}</option>`;
+                    });
+
+                    bookDropdown.innerHTML = options;
+                    bookDropdown.disabled = false;
+                })
+                .catch(() => {
+                    bookDropdown.innerHTML = '<option value="">Error loading books</option>';
+                });
+        });
+    </script>
+
 
 </x-app>

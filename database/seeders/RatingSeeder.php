@@ -31,7 +31,7 @@ class RatingSeeder extends Seeder
             $ratings[] = [
                 'user_id' => $userId[array_rand($userId)],
                 'produk_buku_id' => $produkBukuId[array_rand($produkBukuId)],
-                'rating' => rand(2, 10),
+                'ratings' => rand(2, 10),
                 'created_at' => $fake->dateTimeBetween('-6 months'),
                 'updated_at' => $now,
             ];
@@ -40,7 +40,7 @@ class RatingSeeder extends Seeder
                 RatingUser::upsert(
                     $ratings,
                     ['user_id', 'produk_buku_id'],
-                    ['rating', 'updated_at']
+                    ['ratings', 'updated_at']
                 );
                 $ratings = [];
             }
@@ -50,7 +50,7 @@ class RatingSeeder extends Seeder
             RatingUser::upsert(
                 $ratings,
                 ['user_id', 'produk_buku_id'],
-                ['rating', 'updated_at']
+                ['ratings', 'updated_at']
             );
         }
     }

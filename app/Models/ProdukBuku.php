@@ -91,7 +91,7 @@ class ProdukBuku extends Model
                 'publisherBuku:id,nama_publisher'
             ])
             ->withCount('ratings as total_voters')
-            ->withAvg('ratings as avg_rating', 'rating');
+            ->withAvg('ratings as avg_rating', 'ratings');
     }
 
     public function scopeTotalRate($query, $vote)

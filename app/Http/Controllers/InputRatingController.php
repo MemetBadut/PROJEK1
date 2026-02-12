@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\PenulisBuku;
+use App\Models\ProdukBuku;
 use Illuminate\Http\Request;
 
 class InputRatingController extends Controller
@@ -10,9 +11,14 @@ class InputRatingController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index($authorId)
     {
-        return view('input_rating.index', );
+        $rateProduk = ProdukBuku::where('penulis_buku_id', $authorId)
+            ->select('id', 'nama_buku')
+            ->orderBy('nama_buku')
+            ->get();
+
+        return view('input_rating.index', compact('rateProduk'));
     }
 
     /**
@@ -28,7 +34,7 @@ class InputRatingController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        return redirect()->route('home')->with('success', 'Rating berhasil terkirim');
     }
 
     /**
