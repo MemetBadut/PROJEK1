@@ -31,44 +31,46 @@
                     class="font-medium flex flex-col p-4 md:p-0 mt-4 border border-default rounded-base bg-neutral-secondary-soft md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0 md:border-0 md:bg-neutral-primary">
                     @if (request()->routeIs('home'))
                         <li>
-                            <a href="{{ route('voting.index')}}"
-                                class="block py-2 px-3 text-heading rounded hover:bg-neutral-tertiary md:hover:bg-transparent md:border-0 md:hover:text-fg-brand md:p-0
-                            md:dark:hover:bg-transparent">
+                            <a href="{{ route('voting.index') }}"
+                                class="block py-2 px-3 text-heading rounded hover:bg-neutral-tertiary md:hover:bg-transparent md:border-0 md:hover:text-fg-brand md:p-0 md:dark:hover:bg-transparent">
                                 Input Rating</a>
                         </li>
                         <li>
                             <a href="{{ route('author.index') }}"
-                                class="block py-2 px-3 text-heading rounded hover:bg-neutral-tertiary md:hover:bg-transparent md:border-0 md:hover:text-fg-brand md:p-0
-                            md:dark:hover:bg-transparent">
+                                class="block py-2 px-3 text-heading rounded hover:bg-neutral-tertiary md:hover:bg-transparent md:border-0 md:hover:text-fg-brand md:p-0 md:dark:hover:bg-transparent">
                                 Author</a>
                         </li>
                     @elseif(request()->routeIs('voting.index'))
                         <li>
                             <a href="{{ route('home') }}"
-                                class="block py-2 px-3 text-heading rounded hover:bg-neutral-tertiary md:hover:bg-transparent md:border-0 md:hover:text-fg-brand md:p-0
-                            md:dark:hover:bg-transparent">
-                                Home</a>
-                        </li>
-                        <li>
-                            <a href="{{ route(name: 'author.index') }}"
-                                class="block py-2 px-3 text-heading rounded hover:bg-neutral-tertiary md:hover:bg-transparent md:border-0 md:hover:text-fg-brand md:p-0
-                            md:dark:hover:bg-transparent">Input
-                                Rating</a>
-                        </li>
-                    @elseif (request()->routeIs('voting.index'))
-                        <li>
-                            <a href="{{ route('home') }}"
-                                class="block py-2 px-3 text-heading rounded hover:bg-neutral-tertiary md:hover:bg-transparent md:border-0 md:hover:text-fg-brand md:p-0
-                            md:dark:hover:bg-transparent">
+                                class="block py-2 px-3 text-heading rounded hover:bg-neutral-tertiary md:hover:bg-transparent md:border-0 md:hover:text-fg-brand md:p-0 md:dark:hover:bg-transparent">
                                 Home</a>
                         </li>
                         <li>
                             <a href="{{ route('author.index') }}"
-                                class="block py-2 px-3 text-heading rounded hover:bg-neutral-tertiary md:hover:bg-transparent md:border-0 md:hover:text-fg-brand md:p-0
-                            md:dark:hover:bg-transparent">Vote
+                                class="block py-2 px-3 text-heading rounded hover:bg-neutral-tertiary md:hover:bg-transparent md:border-0 md:hover:text-fg-brand md:p-0 md:dark:hover:bg-transparent">
                                 Author</a>
                         </li>
+                    @elseif (request()->routeIs('author.index'))
+                        <li>
+                            <a href="{{ route('home') }}"
+                                class="block py-2 px-3 text-heading rounded hover:bg-neutral-tertiary md:hover:bg-transparent md:border-0 md:hover:text-fg-brand md:p-0 md:dark:hover:bg-transparent">
+                                Home</a>
+                        </li>
+                        <li>
+                            <a href="{{ route('voting.index') }}"
+                                class="block py-2 px-3 text-heading rounded hover:bg-neutral-tertiary md:hover:bg-transparent md:border-0 md:hover:text-fg-brand md:p-0 md:dark:hover:bg-transparent">
+                                Input Rating</a>
+                        </li>
                     @endif
+                    <li>
+                        <form action="{{ route('logout') }}" method="POST" class="m-0">
+                            @csrf
+                            <button type="submit"
+                                class="block py-2 px-3 text-heading rounded hover:bg-neutral-tertiary md:hover:bg-transparent md:border-0 md:hover:text-fg-brand md:p-0 md:dark:hover:bg-transparent w-full text-left">
+                                Logout</button>
+                        </form>
+                    </li>
                 </ul>
             </div>
         </div>

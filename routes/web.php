@@ -9,6 +9,8 @@ use App\Http\Controllers\InputRatingController;
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
 
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
 Route::get('/', [ProdukBukuController::class, 'index'])->name('home');
 Route::get('/buku/{buku:slug}', [ProdukBukuController::class, 'show'])->name('detail_book');
 
