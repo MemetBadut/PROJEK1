@@ -13,9 +13,12 @@ Route::get('/', [ProdukBukuController::class, 'index'])->name('home');
 Route::get('/buku/{buku:slug}', [ProdukBukuController::class, 'show'])->name('detail_book');
 
 Route::middleware('auth')->group(function (): void {
-    Route::get('/voting/{id}/books', [InputRatingController::class, 'index'])->name('voting.index');
+    Route::get('/voting', [InputRatingController::class, 'index'])->name('voting.index');
     Route::post('/voting', [InputRatingController::class, 'store'])->name('voting.store');
 
+    Route::get('/authors/{author}/books', [InputRatingController::class, 'booksByAuthor'])
+        ->name('authors.books');
+
     Route::get('/author', [AuthorBukuController::class, 'index'])->name('author.index');
-    Route::get('/author/{id}', [AuthorBukuController::class, 'store'])->name('author.store');
+    Route::post('/author/{id}', [AuthorBukuController::class, 'store'])->name('author.store');
 });
