@@ -21,7 +21,7 @@ return new class extends Migration
             $table->decimal('avg_rating', 3, 2);
             $table->decimal('rating_prev_30d', 3, 2)->nullable();
             $table->decimal('popularity_score', 8, 2)->index();
-            $table->decimal('trending_score', 8, 2)->index();
+            $table->decimal('trending_score', 8, 2)->index()->nullable();
             $table->timestamps();
         });
     }

@@ -34,7 +34,7 @@ class AuthController extends Controller
 
     public function showRegistrationForm()
     {
-        return view('auth.register');
+        return view('register');
     }
 
     public function register(Request $request)
@@ -42,7 +42,7 @@ class AuthController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8|confirmed',
+            'password' => 'required|string|min:8',
         ]);
 
         $user = \App\Models\User::create([
@@ -53,7 +53,7 @@ class AuthController extends Controller
 
         Auth::login($user);
         $request->session()->regenerate();
-        return redirect('/');
+        return redirect('/login')->with('success', 'Registration successful. Please login.');
     }
 
     public function logout(Request $request)

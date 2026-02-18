@@ -20,8 +20,11 @@
         <div class="mt-4">
             <a href="{{ route('home') }}"
                 class="block w-full text-center bg-gray-200 text-gray-700 py-2 rounded-lg hover:bg-gray-300 transition">
-                Masuk sebagai Guest
+                Log as Guest
             </a>
+            <div>
+                <a href="{{ route('register') }}">Register</a>
+            </div>
         </div>
     </div>
 </div>

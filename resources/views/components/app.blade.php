@@ -63,20 +63,32 @@
                                 Input Rating</a>
                         </li>
                     @endif
-                    <li>
-                        <form action="{{ route('logout') }}" method="POST" class="m-0">
+
+                    @auth
+                        <form action="{{ route('logout') }}" method="POST">
                             @csrf
                             <button type="submit"
-                                class="block py-2 px-3 text-heading rounded hover:bg-neutral-tertiary md:hover:bg-transparent md:border-0 md:hover:text-fg-brand md:p-0 md:dark:hover:bg-transparent w-full text-left">
+                                class="block py-2 px-3 text-heading rounded hover:bg-neutral-tertiary md:hover:bg-transparent md:border-0
+                                md:hover:text-fg-brand md:p-0 md:dark:hover:bg-transparent w-full text-left cursor-pointer">
                                 Logout</button>
                         </form>
-                    </li>
+                    @endauth
+
+                    @guest
+                        <form action="{{ route('login') }}">
+                            @csrf
+                            <button type="submit"
+                                class="block py-2 px-3 text-heading rounded hover:bg-neutral-tertiary md:hover:bg-transparent
+                                 md:border-0 md:hover:text-fg-brand md:p-0 md:dark:hover:bg-transparent w-full text-left cursor-pointer">
+                                Login</button>
+                        </form>
+                    @endguest
                 </ul>
             </div>
         </div>
     </nav>
-
     {{-- Header end --}}
+
     <main class="pt-16">
         {{ $slot }}
     </main>
