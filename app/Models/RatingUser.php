@@ -20,4 +20,8 @@ protected $table = 'rating_users';
     public function produkBuku(){
         return $this->belongsTo(ProdukBuku::class, 'produk_buku_id', 'id');
     }
+
+    protected static function booted(){
+        static::observe(\App\Observer\RatingUserObserver::class);
+    }
 }
