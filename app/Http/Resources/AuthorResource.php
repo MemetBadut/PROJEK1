@@ -3,7 +3,9 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
+use App\Http\Resources\BookResource;
 use Illuminate\Http\Resources\Json\JsonResource;
+
 
 class AuthorResource extends JsonResource
 {
