@@ -50,7 +50,7 @@ class ProdukBukuController extends Controller
      */
     public function show(ProdukBuku $buku)
     {
-        $buku = ProdukBuku::listBooks()
+        $buku = ProdukBuku::with(['penulisBuku', 'publisherBuku', 'kategoriBuku'])
         ->whereKey($buku->id)
         ->firstOrFail();
 
