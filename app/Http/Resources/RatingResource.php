@@ -18,7 +18,17 @@ class RatingResource extends JsonResource
             'id' => $this->id,
             'user_id' => $this->user_id,
             'produk_buku_id' => $this->produk_buku_id,
-            'rating'
+            'rating' => $this->ratings,
+            'voter' => $this->whenLoaded('voter', fn() => [
+                'id' => $this->voter->id,
+                'name' => $this->voter->name
+            ]),
+            'buku' => $this->whenLoaded('produkBuku', fn() => [
+                'id' => $this->produkBuku->id,
+                'nama_buku' => $this->produkBuku->nama_buku
+            ]),
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at,
         ];
     }
 }
