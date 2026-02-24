@@ -71,7 +71,7 @@ class AuthorStatsService
         AuthorStats::updateOrCreate(
             ['penulis_buku_id' => $authorId],
             [
-                'total_books' => $totalBooks,
+                'total_books'  => $totalBooks,
                 'voters_gt_5' => $voterGt5,
                 'avg_rating' => round($avgRating, 2),
                 'total_voters' => $totalVotes,
