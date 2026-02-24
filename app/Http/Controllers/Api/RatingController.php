@@ -5,7 +5,10 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\RatingResource;
 use App\Models\RatingUser;
+use App\Service\VoteSubmissionService;
 use Illuminate\Http\Request;
+use Illuminate\Database\QueryException;
+use DomainException;
 
 class RatingController extends Controller
 {
@@ -23,17 +26,31 @@ class RatingController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request, VoteSubmissionService $voteSubmissionService)
     {
         $validated = $request->validate([
-            'user_id' => 'required|exists:users,id',
-            'produk_buku_id' => 'required|exists:produk_buku,id',
-            'ratings' => 'required|numeric|min:1|max:10',
+            'author_id' => ['required', 'exists:penulis_bukus,id'],
+            'produk_buku_id' => ['required', 'exists:produk_bukus,id'],
+            'ratings' => ['required', 'integer', 'min:1', 'max:10'],
         ]);
 
-        $rating = RatingUser::create($validated);
+        try {
+            $rating = $voteSubmissionService->submit(
+                (int) $request->user()->id,
+                (int) $validated['produk_buku_id'],
+                (int) $validated['author_id'],
+                (int) $validated['ratings'],
+            );
+        } catch (DomainException $e) {
+            return response()->json(['message' => $e->getMessage()], 422);
+        } catch (QueryException $e) {
+            if ($e->errorInfo[1] == 1062) {
+                return response()->json(['message' => 'Kamu sudah pernah memberikan rating untuk buku ini.'], 422);
+            }
+            throw $e;
+        }
 
-        return new RatingResource($rating);
+        return new RatingResource($rating->load(['voter', 'produkBuku']));
     }
 
     /**

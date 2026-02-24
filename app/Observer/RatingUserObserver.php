@@ -2,24 +2,34 @@
 
 namespace App\Observer;
 
-use App\Models\DataVoters;
+use App\Models\RatingDailySummary;
 use App\Models\RatingUser;
 use App\Service\AuthorStatsService;
-use Illuminate\Support\Facades\DB;
+use App\Service\RatingSummaryService;
 
 class RatingUserObserver
 {
-    public function created(RatingUser $rating){
-        DataVoters::updateOrCreate(
-            ['produk_buku_id' => $rating->produk_buku_id],
+    public function created(RatingUser $rating): void
+    {
+        $daily = RatingDailySummary::firstOrCreate(
             [
-                'total_voters' => DB::raw('total_voters + 1'),
-                'total_rating_sum' => DB::raw("total_rating_sum + {$rating->ratings}"),
-                'avg_rating' => DB::raw('(total_rating_sum / total_voters)')
+                'produk_buku_id' => $rating->produk_buku_id,
+                'date' => $rating->created_at->toDateString(),
+            ],
+            [
+                'total_votes' => 0,
+                'total_sums' => 0,
             ]
         );
 
-        $authorId = $rating->produkBuku->penulis_buku_id;
-        (new AuthorStatsService())->rebuildForAuthor($authorId);
+        $daily->increment('total_votes');
+        $daily->increment('total_sums', $rating->ratings);
+
+        (new RatingSummaryService())->rebuildForBook((int) $rating->produk_buku_id);
+
+        $authorId = (int) $rating->produkBuku()->value('penulis_buku_id');
+        if ($authorId > 0) {
+            (new AuthorStatsService())->rebuildForAuthor($authorId);
+        }
     }
 }
