@@ -7,7 +7,7 @@ use App\Models\RatingUser;
 use Illuminate\Support\Str;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+
 
 class DummyVoterSeeder extends Seeder
 {
@@ -30,6 +30,6 @@ class DummyVoterSeeder extends Seeder
                     ];
                 }
                 DB::table('data_voters')->upsert($data, ['produk_buku_id'], ['total_voters', 'avg_rating']);
-            });
+            }); 
     }
 }
