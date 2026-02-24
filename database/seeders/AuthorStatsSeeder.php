@@ -18,5 +18,7 @@ class AuthorStatsSeeder extends Seeder
         foreach ($authorId as $id) {
             $service->rebuildForAuthor($id);
         }
+
+        $this->command->info("data author rebuilt untuk {$authorId->count()} author.");
     }
 }
