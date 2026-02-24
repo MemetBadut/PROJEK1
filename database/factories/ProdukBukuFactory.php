@@ -23,6 +23,7 @@ public function definition(): array
     static $penulisIds;
     static $publisherIds;
     $title = fake()->sentence(3);
+    $sinopsis = fake()->sentence(3);
 
     $penulisIds ??= PenulisBuku::pluck('id')->toArray();
     $publisherIds ??= PublisherBuku::pluck('id')->toArray();
@@ -45,6 +46,7 @@ public function definition(): array
         'status_buku' => $status,
         'rating_enabled' => $status === 'tersedia',
         'slug' => str($title)->slug(),
+        'sinopsis' => $sinopsis,
         'created_at' => $createdAt,
         'updated_at' => fake()->dateTimeBetween($createdAt, 'now'),
     ];

@@ -3,7 +3,9 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
+use App\Http\Resources\BookResource;
 use Illuminate\Http\Resources\Json\JsonResource;
+
 
 class AuthorResource extends JsonResource
 {
@@ -16,10 +18,10 @@ class AuthorResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'nama_penulis' => $this->penulis_buku,
+            'nama_penulis' => $this->nama_penulis,
             'buku' => BookResource::collection($this->whenLoaded('produkBuku')),
             'stats' => $this->whenLoaded('stats', fn() => [
-                'stats' => $this->stats->popularity_score,
+                'popularity_score' => $this->stats->popularity_score,
                 'total_voters' => $this->stats->total_voters,
             ]),
             'created_at' => $this->created_at,

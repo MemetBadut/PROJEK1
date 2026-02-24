@@ -52,15 +52,15 @@ class ProdukBuku extends Model
         return $query->where(function ($q) use ($keyword) {
             $q->where('nama_buku', 'like', "%{$keyword}%")
                 ->orWhere('isbn', 'like', "%{$keyword}%")
-                ->orWhereHas('penulisBuku', function($qq) use ($keyword){
+                ->orWhereHas('penulisBuku', function ($qq) use ($keyword) {
                     $qq->where('nama_penulis', 'like', "%{$keyword}%");
                 })
-                ->orWhereHas('publisherBuku', function($qq) use ($keyword){
+                ->orWhereHas('publisherBuku', function ($qq) use ($keyword) {
                     $qq->where('nama_publisher', 'like', "%{$keyword}%");
                 });
         });
 
-        if(is_numeric($keyword)){
+        if (is_numeric($keyword)) {
             return $query->orWhere('isbn', 'like', "%{$keyword}%");
         }
     }
@@ -84,7 +84,7 @@ class ProdukBuku extends Model
 
     public function scopeListBooks($query)
     {
-        return $query->select('id', 'nama_buku', 'penulis_buku_id', 'publisher_id', 'status_buku', 'slug','isbn')
+        return $query->select('id', 'nama_buku', 'penulis_buku_id', 'publisher_id', 'status_buku', 'slug', 'isbn')
             ->with([
                 'kategoriBuku:id,kategori_buku',
                 'penulisBuku:id,nama_penulis',
