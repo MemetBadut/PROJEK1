@@ -14,16 +14,17 @@ class VotingRules
      */
     public static function validate(int $userId, int $bookId, int $authorId): array
     {
-        // 1. Validate book belongs to author
-        $book = ProdukBuku::find($bookId);
-        if (!$book || $book->penulis_buku_id != $authorId) {
+        // 1. Validate selected book belongs to selected author.
+        $book = ProdukBuku::query()->select('id', 'penulis_buku_id')->find($bookId);
+
+        if (!$book || (int) $book->penulis_buku_id !== $authorId) {
             return [
                 'ok' => false,
                 'message' => 'Buku ini bukan milik author yang dipilih.',
             ];
         }
 
-        // 2. Check duplicate: user already rated this book
+        // 2. Prevent duplicate vote for the same book.
         $alreadyRated = RatingUser::where('user_id', $userId)
             ->where('produk_buku_id', $bookId)
             ->exists();
@@ -35,18 +36,21 @@ class VotingRules
             ];
         }
 
-        // 3. Check 24-hour cooldown: user rated ANY book in last 24 hours
-        $lastRating = RatingUser::where('user_id', $userId)
+        // 3. Global 24-hour cooldown per user (any book).
+        $hasRecentRating = RatingUser::where('user_id', $userId)
             ->where('created_at', '>=', now()->subHours(24))
             ->exists();
 
-        if ($lastRating) {
+        if ($hasRecentRating) {
             return [
                 'ok' => false,
                 'message' => 'Kamu harus menunggu 24 jam sebelum memberikan rating lagi.',
             ];
         }
 
-        return ['ok' => true];
+        return [
+            'ok' => true,
+            'message' => null,
+        ];
     }
 }

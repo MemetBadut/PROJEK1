@@ -7,92 +7,79 @@ use Illuminate\Support\Facades\DB;
 
 class AuthorStatsService
 {
-    /**
-     * Create a new class instance.
-     */
-    public function __construct() {}
-
-    public function rebuildForAuthor(int $authorId)
+    public function rebuildForAuthor(int $authorId): void
     {
-        $stats = DB::table('rating_users')
-            ->join('produk_bukus', 'produk_bukus.id', '=', 'rating_users.produk_buku_id')
+        $dailyStats = DB::table('rating_daily_summary')
+            ->join('produk_bukus', 'produk_bukus.id', '=', 'rating_daily_summary.produk_buku_id')
             ->where('produk_bukus.penulis_buku_id', $authorId);
 
-        // Untuk menghitung jumlah voters yang memberikan rating > 5
-        $voterGt5 = (clone $stats)->where('ratings', '>', 5)->count();
-
-        // Untuk menghitung AVG rating dan total votes
-        $lifetime = (clone $stats)
+        $lifetime = (clone $dailyStats)
             ->selectRaw('
-            COUNT(*) as total_votes,
-            AVG(ratings) as avg_rating
-        ')
+                COALESCE(SUM(total_votes), 0) as total_votes,
+                COALESCE(SUM(total_sums), 0) as total_sums
+            ')
             ->first();
 
-        $avgRating = $lifetime->avg_rating ?? 0;
-        $totalVotes = $lifetime->total_votes ?? 0;
+        $last30d = (clone $dailyStats)
+            ->whereBetween('rating_daily_summary.date', [
+                now()->subDays(29)->toDateString(),
+                now()->toDateString(),
+            ])
+            ->selectRaw('
+                COALESCE(SUM(total_votes), 0) as votes,
+                COALESCE(SUM(total_sums), 0) as sums
+            ')
+            ->first();
 
-        // Total books by this author
+        $prev30d = (clone $dailyStats)
+            ->whereBetween('rating_daily_summary.date', [
+                now()->subDays(59)->toDateString(),
+                now()->subDays(30)->toDateString(),
+            ])
+            ->selectRaw('
+                COALESCE(SUM(total_votes), 0) as votes,
+                COALESCE(SUM(total_sums), 0) as sums
+            ')
+            ->first();
+
+        $totalVotes = (int) ($lifetime->total_votes ?? 0);
+        $totalSums = (float) ($lifetime->total_sums ?? 0);
+        $votes30d = (int) ($last30d->votes ?? 0);
+        $sums30d = (float) ($last30d->sums ?? 0);
+        $votesPrev30d = (int) ($prev30d->votes ?? 0);
+        $sumsPrev30d = (float) ($prev30d->sums ?? 0);
+
+        $avgRating = $totalVotes > 0 ? ($totalSums / $totalVotes) : 0.0;
+        $rating30d = $votes30d > 0 ? ($sums30d / $votes30d) : 0.0;
+        $ratingPrev30d = $votesPrev30d > 0 ? ($sumsPrev30d / $votesPrev30d) : 0.0;
+
+        $deltaAvg = $rating30d - $ratingPrev30d;
+        $weight = log($votes30d + 1);
+        $trendingScore = $deltaAvg * $weight;
+        $popularityScore = $rating30d * $weight;
+
+        $voterGt5 = DB::table('rating_users')
+            ->join('produk_bukus', 'produk_bukus.id', '=', 'rating_users.produk_buku_id')
+            ->where('produk_bukus.penulis_buku_id', $authorId)
+            ->where('rating_users.ratings', '>', 5)
+            ->count();
+
         $totalBooks = DB::table('produk_bukus')
             ->where('penulis_buku_id', $authorId)
             ->count();
-
-        // Avg rating last 30 days
-        $last30d = (clone $stats)
-            ->where('rating_users.created_at', '>=', now()->subDays(30))
-            ->selectRaw('
-            COUNT(*) as votes,
-            AVG(ratings) as avg_rating
-        ')
-            ->first();
-        $votes30d = $last30d->votes ?? 0;
-        $rating30d = $last30d->avg_rating ?? 0;
-
-        // Avg rating previous 30 days (30-60 days ago)
-        $prev30d = (clone $stats)
-            ->whereBetween('rating_users.created_at', [
-                now()->subDays(60),
-                now()->subDays(30),
-            ])
-            ->selectRaw('
-                COUNT(*) as votes,
-                AVG(ratings) as avg_rating
-           ')
-            ->first();
-        $votesPrev30D = $prev30d->votes ?? 0;
-        $ratingPrev30d = $prev30d->avg_rating ?? 0;
-
-        $deltaAvg = $rating30d - $ratingPrev30d;
-        $deltaVotes = $votes30d - $votesPrev30D;
-
-        $trending_score = $ratingPrev30d > 0
-            ? $deltaAvg * log($totalVotes + 1)
-            : 0;
 
         AuthorStats::updateOrCreate(
             ['penulis_buku_id' => $authorId],
             [
                 'total_books' => $totalBooks,
                 'voters_gt_5' => $voterGt5,
-                'avg_rating' => round($avgRating ?? 0, 2),
-                'total_voters' => $totalVotes ?? 0,
-                'rating_30d' => round($rating30d ?? 0, 2),
-                'rating_prev_30d' => $ratingPrev30d !== null
-                    ? round($ratingPrev30d, 2)
-                    : null,
-                'popularity_score' => round(
-                    $this->popularityScore($voterGt5, $avgRating),
-                    2
-                ),
-                'trending_score' => $trending_score !== null
-                    ? round($trending_score, 2)
-                    : null,
+                'avg_rating' => round($avgRating, 2),
+                'total_voters' => $totalVotes,
+                'rating_30d' => round($rating30d, 2),
+                'rating_prev_30d' => round($ratingPrev30d, 2),
+                'popularity_score' => round($popularityScore, 2),
+                'trending_score' => round($trendingScore, 2),
             ]
         );
-    }
-
-    private function popularityScore(int $voters, float $avg)
-    {
-        return ($voters * 0.7) + ($avg * 10 * 0.3);
     }
 }
