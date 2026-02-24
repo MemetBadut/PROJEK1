@@ -27,7 +27,8 @@ class RatingUserObserver
 
         (new RatingSummaryService())->rebuildForBook((int) $rating->produk_buku_id);
 
-        $authorId = (int) $rating->produkBuku()->value('penulis_buku_id');
+        $rating->load('produkBuku');
+        $authorId = (int) $rating->produkBuku?->penulis_buku_id;
         if ($authorId > 0) {
             (new AuthorStatsService())->rebuildForAuthor($authorId);
         }
