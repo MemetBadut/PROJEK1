@@ -28,7 +28,7 @@ class RatingController extends Controller
         $validated = $request->validate([
             'user_id' => 'required|exists:users,id',
             'produk_buku_id' => 'required|exists:produk_buku,id',
-            'ratings' => 'required|numeric|min:1|max:5',
+            'ratings' => 'required|numeric|min:1|max:10',
         ]);
 
         $rating = RatingUser::create($validated);
