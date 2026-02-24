@@ -9,6 +9,11 @@ use App\Service\RatingSummaryService;
 
 class RatingUserObserver
 {
+    public function __construct(
+        private RatingSummaryService $ratingSummaryService,
+        private AuthorStatsService $authorStatsService
+    ) {}
+
     public function created(RatingUser $rating): void
     {
         $daily = RatingDailySummary::firstOrCreate(
@@ -25,12 +30,12 @@ class RatingUserObserver
         $daily->increment('total_votes');
         $daily->increment('total_sums', $rating->ratings);
 
-        (new RatingSummaryService())->rebuildForBook((int) $rating->produk_buku_id);
+        $this->ratingSummaryService->rebuildForBook((int) $rating->produk_buku_id);
 
         $rating->load('produkBuku');
         $authorId = (int) $rating->produkBuku?->penulis_buku_id;
         if ($authorId > 0) {
-            (new AuthorStatsService())->rebuildForAuthor($authorId);
+            $this->authorStatsService->rebuildForAuthor($authorId);
         }
     }
 }
