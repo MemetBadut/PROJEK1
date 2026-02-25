@@ -1,12 +1,12 @@
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
 
-## About This Project
+## [ℹ️]About This Project 
 
 Project Libray mister John ini merupakan project lanjutan dari project lama yang pernah aku buat. Dalam project kali ini, aku membuat website sederhana untuk perpustakaan milik Pak John karena dia memiliki perpustakaan pribadi. Project ini 
 
 
-## Cara menggunakan project Library
+## 📃Cara menggunakan project Library 📃
 1. Siapkan folder baru dan lakukan "clone" dengan command "git clone" pada folder (agar bisa mengakses git repository)
     ```bash
     git clone https://github.com/MemetBadut/PROJEK1.git
