@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Database\Seeders\UserSeeder;
+use Database\Seeders\RatingDailySummarySeeder;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 class DatabaseSeeder extends Seeder
@@ -28,6 +29,7 @@ class DatabaseSeeder extends Seeder
             PublisherBukuSeeder::class,
             TabelBukuSeeder::class,
             RatingSeeder::class,
+            RatingDailySummarySeeder::class,
             DummyVoterSeeder::class,
             TabelPivotBukuKategori::class,
             AuthorStatsSeeder::class,
