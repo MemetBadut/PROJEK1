@@ -7,7 +7,7 @@ Project Libray mister John ini merupakan project lanjutan dari project lama yang
 
 
 ## Cara menggunakan project Library
-1. Siapkan folder baru dan lakukan <bold>"clone"</bold> dengan command #"git clone"# pada folder (agar bisa mengakses git repository)
+1. Siapkan folder baru dan lakukan <p style="font-style:bold">"clone"</p> dengan command #"git clone"# pada folder (agar bisa mengakses git repository)
     ```command
      git clone https://github.com/MemetBadut/PROJEK1.git
 2. Lakukan "git remote add" ke link project ini (https://github.com/MemetBadut/PROJEK1.git)
