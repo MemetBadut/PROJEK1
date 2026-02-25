@@ -13,18 +13,45 @@ Project Libray mister John ini merupakan project lanjutan dari project lama yang
 
 2. Jika sudah, install package dengan "composer install dan npm install"
      1. composer install (code dibawah sebagai contoh) : 
-   ```bash
+    ```bash
     PS C:\laragon\www\library>composer install
     ```
     2. npm install (code dibawah sebagai contoh) :
     ```bash
     PS C:\laragon\www\library>npm install
-3. Lakukan proses seeding database dengan "php artisan db:seed"
-4. Untuk mengakses fitur Input Rating dan Auhtor, perlu melakukan login :<br>
+    ```
+3. Salin .env.example untuk konfigurasi file .env :
+   ```bash
+   PS C:\laragon\www\library>cp .env.example .env
+   ```
+    Dan lakukan konfigurasi pada bagian :
+   ```
+   DB_CONNECTION=sqlite  => ubah jadi Mysql
+   # DB_HOST=127.0.0.1   => biarkan 
+   # DB_PORT=3306        => ini default, bisa disesuaikan 
+   # DB_DATABASE=laravel => ganti sebagai laravel_tokobuku
+   # DB_USERNAME=root    => bisa dihapus/biarkan
+   # DB_PASSWORD=        => bisa titambahkan/biarkan
+   ```
+4. Jalankan artisan untuk generate key baru
+   ```bash
+    PS C:\laragon\www\library>php artisan key:generate
+   --------------------------------------------------------
+   Ini digunakan untuk membuat Application Key pada project
+   ```
+5. Jalankan command artisan untuk generate tabel pada migration
+   ```bash
+   PS C:\laragon\www\library>php artisan migrate
+   ```
+   atau langsung seeding database
+   ```bash
+   PS C:\laragon\www\library>php artisan migrate:fresh --seed
+   ```
+6. Untuk mengakses fitur Input Rating dan Auhtor, perlu melakukan login :<br>
    → Admin : bagindaadmin@gmail.com   | adminmin
    <br>
    → User  : (bisa ambil email bebas) | userser
-5. Project bisa langsung dicoba dan digunakan
+7. Dan Project bisa siap digunakan
 
 
 
