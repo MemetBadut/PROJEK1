@@ -12,11 +12,11 @@ Project Libray mister John ini merupakan project lanjutan dari project lama yang
     git clone https://github.com/MemetBadut/PROJEK1.git
 
 2. Jika sudah, install package dengan "composer install dan npm install"
-    ## 1. composer install (code dibawah sebagai contoh) : 
+     1. composer install (code dibawah sebagai contoh) : 
    ```bash
     PS C:\laragon\www\library>composer install
     ```
-   ## 2. npm install (code dibawah sebagai contoh) :
+    2. npm install (code dibawah sebagai contoh) :
     ```bash
     PS C:\laragon\www\library>npm install
 3. Lakukan proses seeding database dengan "php artisan db:seed"
