@@ -8,13 +8,15 @@ Project Libray mister John ini merupakan project lanjutan dari project lama yang
 
 ## Cara menggunakan project nya 
 1. Siapkan folder baru dan lakukan "init" dengan command "git init" pada folder (agar bisa mengakses git repository)
-2. Lakukan "git remote add" ke link project ini (https://github.com/MemetBadut/PROJEK1.git)
-3. Jika sudah, install package dengan "composer install dan npm install"
-4. Lakukan proses seeding database dengan "php artisan db:seed"
-5. Untuk mengakses fitur Input Rating dan Auhtor, perlu melakukan login :
+   ```bash
+   
+3. Lakukan "git remote add" ke link project ini (https://github.com/MemetBadut/PROJEK1.git)
+4. Jika sudah, install package dengan "composer install dan npm install"
+5. Lakukan proses seeding database dengan "php artisan db:seed"
+6. Untuk mengakses fitur Input Rating dan Auhtor, perlu melakukan login :
    → Admin : bagindaadmin@gmail.com   | adminmin
    → User  : (bisa ambil email bebas) | userser
-6. Project bisa langsung dicoba dan digunakan 
+7. Project bisa langsung dicoba dan digunakan 
 
 
 
