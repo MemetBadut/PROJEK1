@@ -12,9 +12,10 @@ Project Libray mister John ini merupakan project lanjutan dari project lama yang
 3. Jika sudah, install package dengan "composer install dan npm install"
 4. Lakukan proses seeding database dengan "php artisan db:seed"
 5. Untuk mengakses fitur Input Rating dan Auhtor, perlu melakukan login :
+   
    → Admin : bagindaadmin@gmail.com   | adminmin
    → User  : (bisa ambil email bebas) | userser
-6. Project bisa langsung dicoba dan digunakan 
+7. Project bisa langsung dicoba dan digunakan 
 
 
 
