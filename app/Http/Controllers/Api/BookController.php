@@ -25,7 +25,8 @@ class BookController extends Controller
             ->when($request->filled('search'), function ($q) use ($request) {
                 $q->search($request->search);
             })
-            ->paginate(10);
+            ->paginate(20)
+            ->withQueryString();
 
         return BookResource::collection($books);
     }

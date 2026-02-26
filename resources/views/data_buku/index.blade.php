@@ -9,7 +9,7 @@
     <div class="overflow-x-auto ">
         <div class="max-w-6xl mx-auto">
             <table class="w-full">
-                <form action="{{ route('home') }}" method="GET" class="flex justify-between items-center">
+                <form action="{{ url()->current() }}" method="GET" class="flex justify-between items-center">
                     <div class="flex items-center gap-2">
                         <select name="sorting" id="sorting" onchange="this.form.submit()">
                             <option value="">Semua</option>
