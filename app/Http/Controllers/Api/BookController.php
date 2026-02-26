@@ -12,9 +12,19 @@ class BookController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         $books = ProdukBuku::with(['penulisBuku', 'kategoriBuku', 'publisherBuku'])
+            ->when($request->filled('sorting'), function ($q) use ($request) {
+                match ($request->sorting) {
+                    'most', 'least' => $q->totalRate($request->sorting),
+                    'name_asc', 'name_desc' => $q->alphabet($request->sorting),
+                    default => $q
+                };
+            })
+            ->when($request->filled('search'), function ($q) use ($request) {
+                $q->search($request->search);
+            })
             ->paginate(10);
 
         return BookResource::collection($books);
