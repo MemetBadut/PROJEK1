@@ -20,6 +20,7 @@ class AuthorStats extends Model
         'rating_prev_30d',
         'popularity_score',
         'trending_score',
+        'weighted_rating'
     ];
 
     protected $table = 'author_stats';
