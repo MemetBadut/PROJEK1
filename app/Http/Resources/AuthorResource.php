@@ -23,6 +23,7 @@ class AuthorResource extends JsonResource
             'stats' => $this->whenLoaded('stats', fn() => [
                 'popularity_score' => $this->stats->popularity_score,
                 'total_voters' => $this->stats->total_voters,
+                'weighted_rating' => $this->stats->weighted_rating,
             ]),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,

@@ -22,6 +22,7 @@ return new class extends Migration
             $table->decimal('rating_prev_30d', 3, 2)->nullable();
             $table->decimal('popularity_score', 8, 2)->index();
             $table->decimal('trending_score', 8, 2)->index()->nullable();
+            $table->decimal('weighted_rating', 8, 4)->default(0);
             $table->timestamps();
         });
     }
