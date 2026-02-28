@@ -68,9 +68,9 @@ class ProdukBuku extends Model
     public function scopeFilterCategory($query, $status)
     {
         return match ($status) {
-            'available' => $query->orderBy('tersedia'),
-            'rented' => $query->orderBy('dipinjam'),
-            'reserved' => $query->orderBy('tersimpan'),
+            'available' => $query->where('status_buku', 'tersedia'),
+            'rented' => $query->where('status_buku', 'dipinjam'),
+            'reserved' => $query->where('status_buku', 'tersimpan'),
             default => $query
         };
     }
@@ -78,7 +78,7 @@ class ProdukBuku extends Model
     public function scopeFilterYear($query, $year)
     {
         return match ($year) {
-            'release' => $query->orderBy('created_at', 'desc'),
+            'release' => $query->whereYear('created_at', $year),
         };
     }
 
