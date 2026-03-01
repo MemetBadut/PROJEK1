@@ -22,3 +22,9 @@ Route::middleware('auth:sanctum')->group(function () {
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
+<<<<<<< Updated upstream
+=======
+
+Route::apiResource('books', BookController::class);
+Route::apiResource('ratings', RatingController::class);
+>>>>>>> Stashed changes
