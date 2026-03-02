@@ -15,7 +15,7 @@ class AuthorBukuController extends Controller
     {
         $data_authors = PenulisBuku::query()
             ->join('author_stats', 'author_stats.penulis_buku_id', '=', 'penulis_bukus.id')
-            ->orderBy('author_stats.popularity_score', 'desc')
+            ->orderByDesc('author_stats.weighted_rating')
             ->select('penulis_bukus.*', 'author_stats.popularity_score', 'author_stats.total_voters')
             ->paginate(10);
 
