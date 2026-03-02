@@ -58,6 +58,13 @@ class AuthorStatsService
         $trendingScore = $deltaAvg * $weight;
         $popularityScore = $rating30d * $weight;
 
+        // IMDb logic
+        $m = 30;
+        $C = DB::table('author_stats')->avg('avg_rating') ?? 0.0;
+        $R = $avgRating;
+        $v = $totalVotes;
+        $WR = ($v / ($v + $m)) * $R + ($m / ($v + $m)) * $C;
+
         $voterGt5 = DB::table('rating_users')
             ->join('produk_bukus', 'produk_bukus.id', '=', 'rating_users.produk_buku_id')
             ->where('produk_bukus.penulis_buku_id', $authorId)
@@ -71,7 +78,7 @@ class AuthorStatsService
         AuthorStats::updateOrCreate(
             ['penulis_buku_id' => $authorId],
             [
-                'total_books' => $totalBooks,
+                'total_books'  => $totalBooks,
                 'voters_gt_5' => $voterGt5,
                 'avg_rating' => round($avgRating, 2),
                 'total_voters' => $totalVotes,
@@ -79,6 +86,7 @@ class AuthorStatsService
                 'rating_prev_30d' => round($ratingPrev30d, 2),
                 'popularity_score' => round($popularityScore, 2),
                 'trending_score' => round($trendingScore, 2),
+                'weighted_rating' => round($WR, 4),
             ]
         );
     }

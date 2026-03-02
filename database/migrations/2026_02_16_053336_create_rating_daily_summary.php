@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('produk_buku_id')->constrained('produk_bukus')->onDelete('cascade');
             $table->date('date')->nullable();
-            $table->integer('total_votes');
-            $table->decimal('total_sums');
+            $table->integer('total_votes')->default(0);
+            $table->decimal('total_sums', 10, 2)->default(0);
             $table->unique(['produk_buku_id', 'date']);
             $table->timestamps();
         });
