@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\ProdukBuku;
-use App\Models\RatingUser;
 use Illuminate\Http\Request;
 
 class ProdukBukuController extends Controller
