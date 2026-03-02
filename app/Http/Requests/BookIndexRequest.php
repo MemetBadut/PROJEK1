@@ -14,25 +14,49 @@ class BookIndexRequest extends FormRequest
         return true;
     }
 
+    protected function prepareForValidation()
+    {
+        $this->merge([
+            'status' => $this->status ?? null,
+            'search' => $this->search ? trim($this->search) : null,
+            'per_page' => $this->per_page ? (int)$this->per_page : 20
+        ]);
+    }
+
     /**
      * Get the validation rules that apply to the request.
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
 
-    protected function prepForValidation()
-    {
-        $this->merge([
-            'status_buku' => $this->status_buku ?? 'tersedia',
-            ''
-        ]);
-    }
     public function rules(): array
     {
         return [
-            'nama_buku' => ['required', 'string', 'max:255'],
-            'status_buku' => ['required', 'in:tersedia,dipinjam,tersimpan'],
-            ''
+            'search' => ['nullable', 'string', 'max:100'],
+            'sorting' => ['nullable', 'string', 'in:most,least,name_asc,name_desc'],
+            'status' => ['nullable', 'string', 'in:tersedia,dipinjam,tersimpan'],
+            'per_page' => ['nullable', 'integer', 'min:1', 'max:100'],
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'sorting.in'   => 'Urutan hanya boleh: most, least, name_asc, name_desc.',
+            'status.in'    => 'Status buku hanya boleh: tersedia, dipinjam, tersimpan.',
+            'per_page.min' => 'Jumlah per halaman minimal 1.',
+            'per_page.max' => 'Jumlah per halaman maksimal 100.',
+            'search.max'   => 'Keyword pencarian maksimal 100 karakter.',
+        ];
+    }
+
+    public function attributes()
+    {
+        return [
+            'search'   => 'kata kunci pencarian',
+            'sorting'  => 'urutan',
+            'status'   => 'status buku',
+            'per_page' => 'jumlah per halaman',
         ];
     }
 }
