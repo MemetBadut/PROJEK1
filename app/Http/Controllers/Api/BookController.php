@@ -2,30 +2,30 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Controller;
+use App\Http\Requests\BookIndexRequest;
+use App\Http\Resources\BookResource;
 use App\Models\ProdukBuku;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
-use App\Http\Resources\BookResource;
 
 class BookController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
+    public function index(BookIndexRequest $request)
     {
-        $books = ProdukBuku::with(['penulisBuku', 'kategoriBuku', 'publisherBuku'])
-            ->when($request->filled('sorting'), function ($q) use ($request) {
-                match ($request->sorting) {
-                    'most', 'least' => $q->totalRate($request->sorting),
-                    'name_asc', 'name_desc' => $q->alphabet($request->sorting),
-                    default => $q
-                };
+        $validated = $request->validated();
+
+        $books = ProdukBuku::listBooks()
+            ->when(isset($validated['sorting']), function ($q)  use ($validated) {
+                return in_array($validated['sorting'], ['most', 'least'], true)
+                ? $q->totalRate($validated['sorting'])
+                : $q->alphabet($validated['sorting']);
             })
-            ->when($request->filled('search'), function ($q) use ($request) {
-                $q->search($request->search);
-            })
-            ->paginate(20)
+            ->when(isset($validated['search']), fn ($q) => $q->search($validated['search']))
+            ->when(isset($validated['status']), fn($q) => $q->status($validated['status']))
+            ->paginate($validated['per_page'] ?? 20)
             ->withQueryString();
 
         return BookResource::collection($books);
