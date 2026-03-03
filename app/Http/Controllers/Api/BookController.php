@@ -21,10 +21,10 @@ class BookController extends Controller
         $books = ProdukBuku::listBooks()
             ->when(isset($validated['sorting']), function ($q)  use ($validated) {
                 return in_array($validated['sorting'], ['most', 'least'], true)
-                ? $q->totalRate($validated['sorting'])
-                : $q->alphabet($validated['sorting']);
+                    ? $q->totalRate($validated['sorting'])
+                    : $q->alphabet($validated['sorting']);
             })
-            ->when(isset($validated['search']), fn ($q) => $q->search($validated['search']))
+            ->when(isset($validated['search']), fn($q) => $q->search($validated['search']))
             ->when(isset($validated['status']), fn($q) => $q->status($validated['status']))
             ->paginate($validated['per_page'] ?? 20)
             ->withQueryString();
@@ -49,7 +49,8 @@ class BookController extends Controller
      */
     public function show(string $id)
     {
-        $book = ProdukBuku::findOrFail($id);
+        $book = ProdukBuku::with(['penulisBuku', 'publisherBuku', 'kategoriBuku'])
+            ->findOrFail($id);
 
         return new BookResource($book);
     }

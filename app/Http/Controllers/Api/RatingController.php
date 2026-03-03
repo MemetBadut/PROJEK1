@@ -3,36 +3,33 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\IndexRatingRequest;
+use App\Http\Requests\StoreRatingRequest;
+use App\Http\Requests\UpdateRatingRequest;
 use App\Http\Resources\RatingResource;
 use App\Models\RatingUser;
 use App\Service\VoteSubmissionService;
-use Illuminate\Http\Request;
 use Illuminate\Database\QueryException;
 use DomainException;
 
 class RatingController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function index(IndexRatingRequest $request)
     {
         $ratings = RatingUser::with(['voter', 'produkBuku'])
+            ->when(
+                $request->filled('year'),
+                fn($q) =>
+                $q->whereYear('created_at', $request->year)
+            )
             ->paginate(10);
 
         return RatingResource::collection($ratings);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request, VoteSubmissionService $voteSubmissionService)
+    public function store(StoreRatingRequest $request, VoteSubmissionService $voteSubmissionService)
     {
-        $validated = $request->validate([
-            'author_id' => ['required', 'exists:penulis_bukus,id'],
-            'produk_buku_id' => ['required', 'exists:produk_bukus,id'],
-            'ratings' => ['required', 'integer', 'min:1', 'max:10'],
-        ]);
+        $validated = $request->validated();
 
         try {
             $rating = $voteSubmissionService->submit(
@@ -53,34 +50,35 @@ class RatingController extends Controller
         return new RatingResource($rating->load(['voter', 'produkBuku']));
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(string $id)
     {
-        //
+        $rating = RatingUser::with(['voter', 'produkBuku'])
+            ->findOrFail($id);
+
+        return new RatingResource($rating);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    public function update(UpdateRatingRequest $request, string $id)
     {
         $rating = RatingUser::findOrFail($id);
 
-        $validated = $request->validate([
-            'ratings' => 'required|sometimes|integer|min:1|max:10',
-        ]);
+        // Cek produk_buku_id harus sesuai dengan rating yang mau diupdate
+        if ((int) $request->produk_buku_id !== (int) $rating->produk_buku_id) {
+            return response()->json([
+                'message' => 'produk_buku_id tidak sesuai dengan rating ini.'
+            ], 422);
+        }
 
-        $rating->update($validated);
+        $rating->update(['ratings' => $request->ratings]);
 
         return new RatingResource($rating->load(['voter', 'produkBuku']));
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */    public function destroy(string $id)
+    public function destroy(string $id)
     {
-        //
+        $rating = RatingUser::findOrFail($id);
+        $rating->delete();
+
+        return response()->json(['message' => 'Rating berhasil dihapus.']);
     }
 }
