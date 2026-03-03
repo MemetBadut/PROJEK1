@@ -14,10 +14,14 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/login', [AuthController::class, 'loginApi']);
     Route::post('/logout', [AuthController::class, 'logoutApi']);
 
-    Route::apiResource('books', BookController::class);
-    Route::apiResource('ratings', RatingController::class);
-    Route::apiResource('authors', AuthorController::class);
+    Route::apiResource('books', BookController::class)->only('store', 'update', 'delete');
+    Route::apiResource('ratings', RatingController::class)->only('store', 'update', 'delete');
+    Route::apiResource('authors', AuthorController::class)->only('store', 'update', 'delete');
 });
+
+Route::apiResource('books', BookController::class)->only('index', 'show');
+Route::apiResource('ratings', RatingController::class)->only('index', 'show');
+Route::apiResource('authors', AuthorController::class)->only('index', 'show');
 
 
 Route::get('/user', function (Request $request) {
