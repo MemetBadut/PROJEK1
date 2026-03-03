@@ -7,11 +7,12 @@ use App\Http\Controllers\Api\RatingController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-Route::post('/login', [AuthController::class, 'login']);
+Route::post('/login', [AuthController::class, 'loginApi']);
+Route::middleware('auth:sanctum')->post('/logout', [AuthController::class, 'logoutApi']);
 
 Route::middleware('auth:sanctum')->group(function () {
-    Route::get('/me', [AuthController::class, 'me']);
-    Route::post('/logout', [AuthController::class, 'logout']);
+    Route::get('/login', [AuthController::class, 'loginApi']);
+    Route::post('/logout', [AuthController::class, 'logoutApi']);
 
     Route::apiResource('books', BookController::class);
     Route::apiResource('ratings', RatingController::class);
