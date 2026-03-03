@@ -4,9 +4,10 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\BookIndexRequest;
+use App\Http\Requests\BookStoreRequest;
+use App\Http\Requests\BookUpdateRequest;
 use App\Http\Resources\BookResource;
 use App\Models\ProdukBuku;
-use Illuminate\Http\Request;
 
 class BookController extends Controller
 {
@@ -34,9 +35,13 @@ class BookController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(BookStoreRequest $request)
     {
-        //
+        $validated = $request->validated();
+
+        $book = ProdukBuku::create($validated);
+
+        return new BookResource(($book));
     }
 
     /**
@@ -44,22 +49,26 @@ class BookController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $book = ProdukBuku::findOrFail($id);
+
+        return new BookResource($book);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+
+    public function update(BookUpdateRequest $request, string $id)  // ← ganti Request
     {
-        //
+        $book = ProdukBuku::findOrFail($id);
+        $book->update($request->validated());
+        return new BookResource($book);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(string $id)
     {
-        //
+        $book = ProdukBuku::findOrFail($id);
+        $book->delete();
+        return response()->json(['message' => 'Buku berhasil dihapus.'], 200);
     }
 }
