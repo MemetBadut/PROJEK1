@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\ProdukBuku;
 use App\Models\PenulisBuku;
 use App\Service\VoteSubmissionService;
 use Illuminate\Http\Request;
