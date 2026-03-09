@@ -17,7 +17,7 @@ class IndexRatingRequest extends FormRequest
     protected function prepareForValidation()
     {
         $this->merge([
-            'year' => $this->year ? trim($this->year) : null,
+            'year' => $this->year ? (int) ($this->year) : null,
         ]);
     }
 

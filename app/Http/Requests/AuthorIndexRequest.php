@@ -30,7 +30,7 @@ class AuthorIndexRequest extends FormRequest
     {
         return [
             // 'sometimes' = hanya validasi kalau field ini dikirim
-            'nama_penulis' => ['sometimes', 'required', 'string', 'max:255'],
+            'nama_penulis' => ['sometimes', 'string', 'max:255'],
         ];
     }
     public function messages()

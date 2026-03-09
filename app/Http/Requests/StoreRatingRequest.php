@@ -11,7 +11,7 @@ class StoreRatingRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,9 @@ class StoreRatingRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'author_id' => ['required', 'integer', 'exists:penulis_bukus,id'],
+            'produk_buku_id' => ['required', 'integer', 'exists:produk_bukus,id'],
+            'ratings' => ['required', 'integer', 'min:1', 'max:10'],
         ];
     }
 }
