@@ -19,21 +19,25 @@ class AuthorBukuController extends Controller
             ->select('penulis_bukus.*', 'author_stats.popularity_score', 'author_stats.total_voters')
             ->paginate(10);
 
-        $data_authors->getCollection()->transform(function ($author) {
-            $author->best_book = ProdukBuku::where('penulis_buku_id', $author->id)
-                ->withAvg('ratings as avg_rating', 'ratings')
-                ->having('avg_rating', '>', 0)
-                ->orderByDesc('avg_rating')
-                ->first();
+        $authorIds = $data_authors->pluck('id');
 
-            $author->worst_book = ProdukBuku::where('penulis_buku_id', $author->id)
-                ->withAvg('ratings as avg_rating', 'ratings')
-                ->having('avg_rating', '>', 0)
-                ->orderBy('avg_rating', 'asc')
-                ->first();
+        $bestBooks = ProdukBuku::where('penulis_buku_id', $authorIds)
+            ->withAvg('ratings as avg_rating', 'ratings')
+            ->having('avg_rating', '>', 0)
+            ->orderByDesc('avg_rating')
+            ->first();
 
-            return $author;
+        $worstBooks = ProdukBuku::where('penulis_buku_id', $authorIds)
+            ->withAvg('ratings as avg_rating', 'ratings')
+            ->having('avg_rating', '>', 0)
+            ->orderBy('avg_rating', 'asc')
+            ->first();
+
+        $data_authors->getCollection()->transform(function ($author) use  ($bestBooks, $worstBooks){
+            $author->best_book = $bestBooks->get($author->id);
+            $author->worst_book = $worstBooks->get($author->id);
         });
+
 
         return view('famous_author.index', compact('data_authors'));
     }
