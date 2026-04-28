@@ -14,8 +14,9 @@ class AuthorController extends Controller
     public function index(AuthorIndexRequest $request)
     {
         $authors = PenulisBuku::with(['produkBuku', 'stats'])
-            ->when($request->filled('nama_penulis'),
- fn($q) =>
+            ->when(
+                $request->filled('nama_penulis'),
+                fn($q) =>
                 $q->where('nama_penulis', 'like', '%' . $request->nama_penulis . '%')
             )
             ->paginate($request->per_page ?? 10);
@@ -41,6 +42,7 @@ class AuthorController extends Controller
     public function update(AuthorUpdateRequest $request, string $id)
     {
         $author = PenulisBuku::findOrFail($id);
+        $author->load(['produkBuku', 'stats']);
         $author->update($request->validated());
 
         return new AuthorResource($author);
