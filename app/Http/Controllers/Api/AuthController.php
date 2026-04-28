@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 
@@ -20,7 +21,7 @@ class AuthController extends Controller
 
         $user = User::where('email', $data['email'])->first();
 
-        if (! $user || ! Hash::check($data['password'], $user->password)) {
+        if (!$user || !Hash::check($data['password'], $user->password)) {
             throw ValidationException::withMessages([
                 'email' => ['Email atau password salah.'],
             ]);
@@ -42,16 +43,24 @@ class AuthController extends Controller
             'email'    => 'required|email',
             'password' => 'required',
         ]);
-        if (!auth()->attempt($credentials)) {
+
+        if (!Auth::attempt($credentials)) {
             return response()->json(['message' => 'Email atau password salah.'], 401);
         }
-        $token = auth()->user()->createToken('api-token')->plainTextToken;
+
+        /** @var User $user */
+        $user = Auth::user();
+        $token = $user->createToken('api-token')->plainTextToken;
+
         return response()->json(['token' => $token]);
     }
 
     public function logoutApi(Request $request)
     {
-        $request->user()->currentAccessToken()->delete();
+        /** @var User $user */
+        $user = $request->user();
+        $user->currentAccessToken()?->delete();
+
         return response()->json(['message' => 'Logout berhasil.']);
     }
 }
