@@ -15,6 +15,8 @@ class ProdukBuku extends Model
         'publisher_id',
         'status_buku',
         'slug',
+        'sinopsis',
+        'rating_enabled',
         'created_at',
         'updated_at'
     ];
@@ -38,9 +40,8 @@ class ProdukBuku extends Model
 
     public function publisherBuku()
     {
-        return $this->belongsTo(PublisherBuku::class, 'id');
+        return $this->belongsTo(PublisherBuku::class, 'publisher_id');
     }
-
 
     public function ratings()
     {
@@ -59,10 +60,6 @@ class ProdukBuku extends Model
                     $qq->where('nama_publisher', 'like', "%{$keyword}%");
                 });
         });
-
-        if (is_numeric($keyword)) {
-            return $query->orWhere('isbn', 'like', "%{$keyword}%");
-        }
     }
 
     public function scopeFilterCategory($query, $status)
