@@ -6,7 +6,6 @@ use App\Models\PenulisBuku;
 use App\Models\PublisherBuku;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-use function Symfony\Component\Clock\now;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\ProdukBuku>
