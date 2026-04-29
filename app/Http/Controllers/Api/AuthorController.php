@@ -8,6 +8,7 @@ use App\Http\Requests\AuthorStoreRequest;
 use App\Http\Requests\AuthorUpdateRequest;
 use App\Http\Resources\AuthorResource;
 use App\Models\PenulisBuku;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class AuthorController extends Controller
 {
@@ -33,26 +34,55 @@ class AuthorController extends Controller
 
     public function show(string $id)
     {
-        $author = PenulisBuku::with(['produkBuku', 'stats'])
-            ->findOrFail($id);
+        try {
+            $author = PenulisBuku::with(['produkBuku', 'stats'])->findOrFail($id);
+        } catch (ModelNotFoundException) {
+            return response()->json(
+                [
+                    'message' => 'Author tidak ditemukan',
+                ],
+                404
+            );
+        }
+
 
         return new AuthorResource($author);
     }
 
     public function update(AuthorUpdateRequest $request, string $id)
     {
-        $author = PenulisBuku::findOrFail($id);
-        $author->load(['produkBuku', 'stats']);
+        try {
+            $author = PenulisBuku::findOrFail($id);
+        } catch (ModelNotFoundException $e) {
+            return  response()->json(
+                [
+                    'message' => 'Author tidak ditemukan',
+                ],
+                404
+            );
+        }
+
         $author->update($request->validated());
+        $author->load(['produkBuku', 'stats']);
 
         return new AuthorResource($author);
     }
 
     public function destroy(string $id)
     {
-        $author = PenulisBuku::findOrFail($id);
+        try {
+            $author = PenulisBuku::findOrFail($id);
+        } catch (ModelNotFoundException) {
+            return response()->json(
+                [
+                    'message' => 'Author tidak ditemukan.'
+                ],
+                404
+            );
+        }
+
         $author->delete();
 
-        return response()->json(['message' => 'Author berhasil dihapus.']);
+        return response()->json(['message' => 'Author berhasil dihapus.'], 200);
     }
 }

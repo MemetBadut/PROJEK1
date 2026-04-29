@@ -11,6 +11,7 @@ use App\Models\RatingUser;
 use App\Service\VoteSubmissionService;
 use Illuminate\Database\QueryException;
 use DomainException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class RatingController extends Controller
 {
@@ -52,8 +53,18 @@ class RatingController extends Controller
 
     public function show(string $id)
     {
-        $rating = RatingUser::with(['voter', 'produkBuku'])
-            ->findOrFail($id);
+        try {
+            $rating = RatingUser::with(['voter', 'produkBuku'])
+                ->findOrFail($id);
+        } catch (ModelNotFoundException) {
+            return response()->json(
+                [
+
+                    'message' => 'Data rating tidak ditemukan.'
+                ]
+            );
+        }
+
 
         return new RatingResource($rating);
     }
@@ -69,6 +80,7 @@ class RatingController extends Controller
             ], 422);
         }
 
+        
         $rating->update(['ratings' => $request->ratings]);
 
         return new RatingResource($rating->load(['voter', 'produkBuku']));
@@ -76,7 +88,16 @@ class RatingController extends Controller
 
     public function destroy(string $id)
     {
-        $rating = RatingUser::findOrFail($id);
+        try {
+            $rating = RatingUser::findOrFail($id);
+        } catch (ModelNotFoundException) {
+            return response()->json(
+                [
+                    'message' => 'Data rating tidak ditemukan.'
+                ], 404
+            );
+        }
+
         $rating->delete();
 
         return response()->json(['message' => 'Rating berhasil dihapus.']);

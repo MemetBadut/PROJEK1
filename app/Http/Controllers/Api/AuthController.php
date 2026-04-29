@@ -44,8 +44,11 @@ class AuthController extends Controller
             'password' => 'required',
         ]);
 
+
         if (!Auth::attempt($credentials)) {
             return response()->json(['message' => 'Email atau password salah.'], 401);
+        }else{
+            return response()->json(['message' => 'Login berhasil. Yippie'], 200);
         }
 
         /** @var User $user */

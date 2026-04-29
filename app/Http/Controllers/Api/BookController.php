@@ -8,6 +8,7 @@ use App\Http\Requests\BookStoreRequest;
 use App\Http\Requests\BookUpdateRequest;
 use App\Http\Resources\BookResource;
 use App\Models\ProdukBuku;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class BookController extends Controller
 {
@@ -49,8 +50,13 @@ class BookController extends Controller
      */
     public function show(string $id)
     {
-        $book = ProdukBuku::with(['penulisBuku', 'publisherBuku', 'kategoriBuku'])
-            ->findOrFail($id);
+        try {
+            $book = ProdukBuku::with(['penulisBuku', 'publisherBuku', 'kategoriBuku'])
+                ->findOrFail($id);
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['message' => 'Data buku tidak ditemukan'], 404);
+        }
+
 
         return new BookResource($book);
     }
@@ -61,16 +67,38 @@ class BookController extends Controller
 
     public function update(BookUpdateRequest $request, string $id)  // ← ganti Request
     {
-        $book = ProdukBuku::findOrFail($id);
-        $book->load(['penulisBuku', 'publisherBuku', 'authorBuku']);
+        try {
+            $book = ProdukBuku::findOrFail($id);
+        } catch (ModelNotFoundException) {
+            return response()->json(
+                [
+                    'message' => 'Data buku tidak ada, tidak bisa update!',
+                ],
+                404
+            );
+        }
+
         $book->update($request->validated());
+        $book->load(['penulisBuku', 'publisherBuku', 'authorBuku']);
+
         return new BookResource($book);
     }
 
     public function destroy(string $id)
     {
-        $book = ProdukBuku::findOrFail($id);
+        try {
+            $book = ProdukBuku::findOrFail($id);
+        } catch (ModelNotFoundException $e) {
+            return response()->json(
+                [
+                    'message' => 'Data buku tidak ditemukan'
+                ],
+                404
+            );
+        }
+
         $book->delete();
+        
         return response()->json(['message' => 'Buku berhasil dihapus.'], 200);
     }
 }
