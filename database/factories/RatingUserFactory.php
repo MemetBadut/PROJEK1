@@ -2,6 +2,8 @@
 
 namespace Database\Factories;
 
+use App\Models\DataVoters;
+use App\Models\ProdukBuku;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -17,8 +19,8 @@ class RatingUserFactory extends Factory
     public function definition(): array
     {
         return [
-            'data_voters_id' => DummyVoteFactory::inRandomOrder()->value('id'),
-            'produk_buku_id' => ProdukBukuFactory::inRandomOrder()->value('id'),
+            'data_voters_id' => DataVoters::inRandomOrder()->value('id'),
+            'produk_buku_id' => ProdukBuku::inRandomOrder()->value('id'),
             'score' => fake()->numberBetween(1, 10),
         ];
     }
