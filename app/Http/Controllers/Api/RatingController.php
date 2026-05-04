@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\IndexRatingRequest;
 use App\Http\Requests\StoreRatingRequest;
 use App\Http\Requests\UpdateRatingRequest;
+use App\Http\Requests\DeleteRatingRequest;
 use App\Http\Resources\RatingResource;
 use App\Models\RatingUser;
 use App\Service\VoteSubmissionService;
@@ -80,13 +81,17 @@ class RatingController extends Controller
             ], 422);
         }
 
-        
+        if ((int) $rating->user_id !== (int) $request->user()->id) {
+            return response()->json(['message' => 'Kamu tidak bisa mengubah rating milik orang lain.'], 403);
+        }
+
+
         $rating->update(['ratings' => $request->ratings]);
 
         return new RatingResource($rating->load(['voter', 'produkBuku']));
     }
 
-    public function destroy(string $id)
+    public function destroy(DeleteRatingRequest $request, string $id)
     {
         try {
             $rating = RatingUser::findOrFail($id);
@@ -94,8 +99,13 @@ class RatingController extends Controller
             return response()->json(
                 [
                     'message' => 'Data rating tidak ditemukan.'
-                ], 404
+                ],
+                404
             );
+        }
+
+        if ((int) $rating->user_id !== (int) $request->user()->id) {
+            return response()->json(['message' => 'Kamu tidak bisa menghapus rating milik orang lain.'], 403);
         }
 
         $rating->delete();
