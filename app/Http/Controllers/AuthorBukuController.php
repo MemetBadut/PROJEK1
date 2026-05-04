@@ -21,21 +21,27 @@ class AuthorBukuController extends Controller
 
         $authorIds = $data_authors->pluck('id');
 
-        $bestBooks = ProdukBuku::where('penulis_buku_id', $authorIds)
+        $bestBooks = ProdukBuku::whereIn('penulis_buku_id', $authorIds)
             ->withAvg('ratings as avg_rating', 'ratings')
             ->having('avg_rating', '>', 0)
             ->orderByDesc('avg_rating')
-            ->first();
+            ->get()
+            ->groupBy('penulis_buku_id')
+            ->map(fn($books) => $books->first());
 
-        $worstBooks = ProdukBuku::where('penulis_buku_id', $authorIds)
+        $worstBooks = ProdukBuku::whereIn('penulis_buku_id', $authorIds)
             ->withAvg('ratings as avg_rating', 'ratings')
             ->having('avg_rating', '>', 0)
             ->orderBy('avg_rating', 'asc')
-            ->first();
+            ->get()
+            ->groupBy('penulis_buku_id')
+            ->map(fn($books) => $books->first());
 
         $data_authors->getCollection()->transform(function ($author) use  ($bestBooks, $worstBooks){
             $author->best_book = $bestBooks->get($author->id);
             $author->worst_book = $worstBooks->get($author->id);
+
+            return $author;
         });
 
 
@@ -64,7 +70,7 @@ class AuthorBukuController extends Controller
     public function show(string $id)
     {
         $data_author = PenulisBuku::with([
-            'produk_bukus' => function ($q) {
+            'produkBuku' => function ($q) {
                 $q->select('id', 'penulis_buku_id', 'nama_buku');
             }
         ])->findOrFail($id);
