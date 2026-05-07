@@ -59,11 +59,36 @@ class AuthorStatsService
         $popularityScore = $rating30d * $weight;
 
         // IMDb logic
-        $m = 30;
-        $C = DB::table('author_stats')->avg('avg_rating') ?? 0.0;
-        $R = $avgRating;
-        $v = $totalVotes;
-        $WR = ($v / ($v + $m)) * $R + ($m / ($v + $m)) * $C;
+            $m = DB::table('rating_daily_summary')
+            ->join('produk_bukus', 'produk_buku_id', '=', 'rating_daily_summary.produk_buku_id')
+            ->groupBy('produk_bukus.penulis_buku_id')
+            ->selectRaw('SUM(total_votes) as author_votes')
+            ->orderBy('author_votes')
+            ->skip((int) (DB::table('penulis_bukus')->count() * 0.25))
+            ->value('author_votes') ?? 30;
+        $C = DB::table('rating_daily_summary')
+            ->selectRaw('SUM(total_sums) / NULLIF(SUM(total_votes), 0) as global_avg')
+            ->value('global_avg') ?? 0.0;
+        $books = DB::table('data_voters')
+            ->join('produk_bukus', 'produk_bukus.id', '=', 'data_voters.produk_buku_id')
+            ->where('produk_bukus.penulis_buku_id', $authorId)
+            ->select('data_voters.total_voters as v', 'data_voters.avg_rating as R')
+            ->get();
+
+        $totalBooks = $books->count();
+        $weightedSum = 0;
+
+        foreach ($books as $book) {
+            $v = (int) $book->v;
+            $R = (float) $book->R;
+
+            // Jika $v == 0, formula ini akan menghasilkan $C (rata-rata global).
+            // Jadi buku tanpa vote tidak menurunkan rating author menjadi 0.
+            $WR = ($v / ($v + $m)) * $R + ($m / ($v + $m)) * $C;
+            $weightedSum += $WR;
+        }
+
+        $authorWR = $totalBooks > 0 ? ($weightedSum / $totalBooks) : 0.0;
 
         $voterGt5 = DB::table('rating_users')
             ->join('produk_bukus', 'produk_bukus.id', '=', 'rating_users.produk_buku_id')
@@ -71,9 +96,6 @@ class AuthorStatsService
             ->where('rating_users.ratings', '>', 5)
             ->count();
 
-        $totalBooks = DB::table('produk_bukus')
-            ->where('penulis_buku_id', $authorId)
-            ->count();
 
         AuthorStats::updateOrCreate(
             ['penulis_buku_id' => $authorId],
@@ -86,7 +108,7 @@ class AuthorStatsService
                 'rating_prev_30d' => round($ratingPrev30d, 2),
                 'popularity_score' => round($popularityScore, 2),
                 'trending_score' => round($trendingScore, 2),
-                'weighted_rating' => round($WR, 4),
+                'weighted_rating' => round($authorWR, 4),
             ]
         );
     }
