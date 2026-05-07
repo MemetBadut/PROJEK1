@@ -14,6 +14,16 @@ class BookResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        $lokasi = [
+            'Gramedia',
+            'Togamas',
+            'Gunung Agung',
+            'Social Agency',
+            'Kinokuniya Jakarta',
+            'Aksara',
+            'Pendopo',
+        ];
+
         return [
             'id' => $this->id,
             'nama_buku' => $this->nama_buku,
@@ -28,6 +38,7 @@ class BookResource extends JsonResource
             ]),
             'status_buku' => $this->status_buku,
             'slug' => $this->slug,
+            'lokasi' => $lokasi,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];
