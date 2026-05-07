@@ -3,7 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Override;
+// use Override;
 
 class DeleteRatingRequest extends FormRequest
 {
@@ -21,18 +21,19 @@ class DeleteRatingRequest extends FormRequest
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
 
-    protected function prepareForValidation(): void
-    {
-        $this->merge([
-            'id' => $this->route('rating'),
-        ]);
-    }
 
     public function rules(): array
     {
         return [
             'id' => 'required|exists:rating_users,id'
         ];
+    }
+
+    protected function prepareForValidation(): void
+    {
+        $this->merge([
+            'id' => $this->route('rating'),
+        ]);
     }
 
     public function messages(): array
