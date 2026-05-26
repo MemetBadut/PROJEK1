@@ -79,7 +79,7 @@ class BookController extends Controller
         }
 
         $book->update($request->validated());
-        $book->load(['penulisBuku', 'publisherBuku', 'authorBuku']);
+        $book->load(['penulisBuku', 'publisherBuku']);
 
         return new BookResource($book);
     }
@@ -98,7 +98,7 @@ class BookController extends Controller
         }
 
         $book->delete();
-        
+
         return response()->json(['message' => 'Buku berhasil dihapus.'], 200);
     }
 }
