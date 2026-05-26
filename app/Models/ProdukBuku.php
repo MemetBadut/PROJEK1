@@ -40,7 +40,7 @@ class ProdukBuku extends Model
 
     public function publisherBuku()
     {
-        return $this->belongsTo(PublisherBuku::class, 'publisher_id');
+        return $this->belongsTo(PublisherBuku::class, 'publisher_id', 'id');
     }
 
     public function ratings()
