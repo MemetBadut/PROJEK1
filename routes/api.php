@@ -1,5 +1,4 @@
 <?php
-
 use App\Http\Controllers\Api\AuthorController;
 use App\Http\Controllers\Api\BookController;
 use App\Http\Controllers\Api\AuthController;
@@ -14,9 +13,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/login', [AuthController::class, 'loginApi']);
     Route::post('/logout', [AuthController::class, 'logoutApi']);
 
-    Route::apiResource('books', BookController::class)->only('store', 'update', 'delete');
-    Route::apiResource('ratings', RatingController::class)->only('store', 'update', 'delete');
-    Route::apiResource('authors', AuthorController::class)->only('store', 'update', 'delete');
+    Route::apiResource('books', BookController::class)->only('store', 'update', 'destroy');
+    Route::apiResource('ratings', RatingController::class)->only('store', 'update', 'destroy');
+    Route::apiResource('authors', AuthorController::class)->only('store', 'update', 'destroy');
 });
 
 Route::apiResource('books', BookController::class)->only('index', 'show');
@@ -27,9 +26,3 @@ Route::apiResource('authors', AuthorController::class)->only('index', 'show');
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
-<<<<<<< Updated upstream
-=======
-
-Route::apiResource('books', BookController::class);
-Route::apiResource('ratings', RatingController::class);
->>>>>>> Stashed changes
