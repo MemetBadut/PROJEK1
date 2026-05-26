@@ -38,10 +38,7 @@ class PenulisBuku extends Model
             ->join('produk_bukus', 'produk_bukus.penulis_buku_id', '=', 'penulis_buku_id')
             ->join('rating_users', 'rating_users.produk_buku_id', '=', 'produk_buku_id')
             ->where('rating_users.ratings', '>', $minRating)
-            ->select(
-                'nama_penulis.*',
-                DB::raw('COUNT(rating_users.id) as popularity')
-            )
+            ->select('nama_penulis.*', DB::raw('COUNT(rating_users.id) as popularity'))
             ->groupBy('penulis_buku.id');
     }
 }

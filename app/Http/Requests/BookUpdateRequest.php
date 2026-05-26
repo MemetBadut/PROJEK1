@@ -65,7 +65,7 @@ class BookUpdateRequest extends FormRequest
         return [
             'nama_buku'       => ['sometimes', 'required', 'string', 'max:255'],
             'penulis_buku_id' => ['sometimes', 'required', 'integer', 'exists:penulis_bukus,id'],
-            'publisher_id'    => ['sometimes', 'required', 'integer', 'exists:publisher_bukus,id'],
+            'publisher_id'    => ['sometimes', 'required', 'integer', 'exists:publisher,id'],
             // ignore ID buku yang sedang diupdate agar ISBN-nya sendiri tetap valid
             'isbn'            => ['sometimes', 'required', 'string', 'max:20', "unique:produk_bukus,isbn,{$bookId}"],
             'status_buku'     => ['sometimes', 'required', 'string', 'in:tersedia,dipinjam,tersimpan'],

@@ -20,7 +20,7 @@ class BookStoreRequest extends FormRequest
             'nama_buku' => $this->nama_buku ? trim($this->nama_buku) : null,
             'isbn' => $this->isbn ? trim($this->isbn) : null,
             'penulis_buku_id' => $this->penulis_buku_id ? (int)$this->penulis_buku_id : null,
-            'publisher_id' => $this->publisher_id ? (int)$this->publisher_id : null,
+            'publisher_id' => $this->publisher_id ? (int)$this->publisher_buku_id : null,
             'status_buku' => $this->status_buku ? trim($this->status_buku) : null,
             'slug' => $this->slug ? trim($this->slug) : null,
             'sinopsis' => $this->sinopsis ? trim($this->sinopsis) : null,
@@ -35,13 +35,13 @@ class BookStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'nama_buku'       => ['required', 'string', 'max:255'],
-            'penulis_buku_id' => ['required', 'integer', 'exists:penulis_bukus,id'],
-            'publisher_id'    => ['required', 'integer', 'exists:publisher_bukus,id'],
-            'isbn'            => ['required', 'string', 'max:20', 'unique:produk_bukus,isbn'],
-            'status_buku'     => ['required', 'string', 'in:tersedia,dipinjam,tersimpan'],
-            'slug'            => ['required', 'string', 'max:255', 'unique:produk_bukus,slug'],
-            'sinopsis'        => ['required', 'string'],
+            'nama_buku'         => ['required', 'string', 'max:255'],
+            'penulis_buku_id'   => ['required', 'integer', 'exists:penulis_bukus,id'],
+            'publisher_buku_id' => ['required', 'integer', 'exists:publisher_bukus,id'],
+            'isbn'              => ['required', 'string', 'max:20', 'unique:produk_bukus,isbn'],
+            'status_buku'       => ['required', 'string', 'in:tersedia,dipinjam,tersimpan'],
+            'slug'              => ['required', 'string', 'max:255', 'unique:produk_bukus,slug'],
+            'sinopsis'          => ['required', 'string'],
         ];
     }
 

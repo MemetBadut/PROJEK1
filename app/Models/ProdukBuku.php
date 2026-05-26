@@ -28,12 +28,6 @@ class ProdukBuku extends Model
         return $this->belongsTo(PenulisBuku::class, 'penulis_buku_id', 'id');
     }
 
-    public function publisherBuku()
-    {
-        return $this->belongsTo(PublisherBuku::class, 'publisher_id');
-    }
-
-
     public function kategoriBuku()
     {
         return $this->belongsToMany(KategoriBuku::class, 'buku_kategori_pivot', 'produk_buku_id', 'kategori_buku_id');
@@ -42,6 +36,11 @@ class ProdukBuku extends Model
     public function ratingUser()
     {
         return $this->hasMany(RatingUser::class, 'produk_buku_id', 'id');
+    }
+
+    public function publisherBuku()
+    {
+        return $this->belongsTo(PublisherBuku::class, 'publisher_id', 'id');
     }
 
     public function ratings()
