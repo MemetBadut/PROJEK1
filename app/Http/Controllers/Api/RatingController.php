@@ -62,7 +62,8 @@ class RatingController extends Controller
                 [
 
                     'message' => 'Data rating tidak ditemukan.'
-                ]
+                ],
+                404
             );
         }
 
