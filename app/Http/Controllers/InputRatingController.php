@@ -4,16 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Models\PenulisBuku;
 use App\Service\VoteSubmissionService;
+use DomainException;
+use Illuminate\Database\QueryException;
+use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Database\QueryException;
-use DomainException;
 
 class InputRatingController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
         $authors = PenulisBuku::orderBy('nama_penulis')->get();
@@ -29,9 +27,6 @@ class InputRatingController extends Controller
             ->get();
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request, VoteSubmissionService $voteSubmissionService)
     {
         $validated = $request->validate([
@@ -51,13 +46,33 @@ class InputRatingController extends Controller
             );
         } catch (DomainException $e) {
             return back()->withErrors(['voting' => $e->getMessage()])->withInput();
+        } catch (UniqueConstraintViolationException $e) {
+            return back()->withErrors([
+                'voting' => 'Kamu sudah pernah memberikan rating untuk buku ini.',
+            ])->withInput();
         } catch (QueryException $e) {
-            if ($e->errorInfo[1] == 1062) {
-                return back()->withErrors(['voting' => 'Kamu sudah pernah memberikan rating untuk buku ini.'])->withInput();
+            // fallback untuk variasi driver/versi
+            if ($this->isUniqueConstraintViolation($e)) {
+                return back()->withErrors([
+                    'voting' => 'Kamu sudah pernah memberikan rating untuk buku ini.',
+                ])->withInput();
             }
+
             throw $e;
         }
 
         return redirect()->route('home')->with('success', 'Rating berhasil terkirim!');
+    }
+
+    private function isUniqueConstraintViolation(QueryException $e): bool
+    {
+        $sqlState = (string) ($e->errorInfo[0] ?? $e->getCode());
+        $driverCode = (string) ($e->errorInfo[1] ?? '');
+        $message = strtolower($e->getMessage());
+
+        return in_array($sqlState, ['23000', '23505'], true)
+            || in_array($driverCode, ['1062', '19', '2067'], true)
+            || str_contains($message, 'unique')
+            || str_contains($message, 'duplicate');
     }
 }
