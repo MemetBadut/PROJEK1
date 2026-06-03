@@ -19,10 +19,17 @@ class AuthorUpdateRequest extends FormRequest
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
+
+    protected function prepareForValidation() :void
+    {
+        if($this->has('nama_penulis')){
+            $this->merge(['nama_penulis' => trim((string) $this->nama_penulis)]);
+        }
+    }
     public function rules(): array
     {
         return [
-            
+            'nama_penulis' => ['sometimes', 'required', 'string', 'max:255'],
         ];
     }
 }
