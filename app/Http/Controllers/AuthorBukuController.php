@@ -14,9 +14,9 @@ class AuthorBukuController extends Controller
     public function index()
     {
         $data_authors = PenulisBuku::query()
-            ->join('author_stats', 'author_stats.penulis_buku_id', '=', 'penulis_bukus.id')
+            ->leftJoin('author_stats', 'author_stats.penulis_buku_id', '=', 'penulis_bukus.id')
+            ->selectRaw('penulis_bukus.*, COALESCE(author_stats.popularity_score,0) as popularity_score, COALESCE(author_stats.total_voters,0) as total_voters')
             ->orderByDesc('author_stats.weighted_rating')
-            ->select('penulis_bukus.*', 'author_stats.popularity_score', 'author_stats.total_voters')
             ->paginate(10);
 
         $authorIds = $data_authors->pluck('id');
@@ -37,7 +37,7 @@ class AuthorBukuController extends Controller
             ->groupBy('penulis_buku_id')
             ->map(fn($books) => $books->first());
 
-        $data_authors->getCollection()->transform(function ($author) use  ($bestBooks, $worstBooks){
+        $data_authors->getCollection()->transform(function ($author) use ($bestBooks, $worstBooks) {
             $author->best_book = $bestBooks->get($author->id);
             $author->worst_book = $worstBooks->get($author->id);
 
