@@ -7,6 +7,29 @@ use Illuminate\Support\Facades\DB;
 
 class AuthorStatsService
 {
+    public function calculateM()
+    {
+        $authorCount = DB::table('penulis_bukus')->count();
+
+        return (float) (
+            DB::table('rating_daily_summary')
+            ->join('produk_bukus', 'produk_bukus.id', '=', 'rating_daily_summary.produk_buku_id')
+            ->groupBy('produk_bukus.penulis_buku_id')
+            ->selectRaw('SUM(total_votes) as author_votes')
+            ->orderBy('author_votes')
+            ->skip((int) ($authorCount * 0.25))
+            ->value('author_votes') ?? 30
+        );
+    }
+
+    public function calculateGLobalAverage(){
+        return (float) (
+            DB::table('rating_daily_summary')
+            ->selectRaw('SUM(total_sums) / NULLIF(SUM(total_votes), 0) as global_avg')
+            ->value('global_avg') ?? 0.0
+        );
+    }
+
     public function rebuildForAuthor(int $authorId): void
     {
         $dailyStats = DB::table('rating_daily_summary')
@@ -44,8 +67,10 @@ class AuthorStatsService
 
         $totalVotes = (int) ($lifetime->total_votes ?? 0);
         $totalSums = (float) ($lifetime->total_sums ?? 0);
+
         $votes30d = (int) ($last30d->votes ?? 0);
         $sums30d = (float) ($last30d->sums ?? 0);
+
         $votesPrev30d = (int) ($prev30d->votes ?? 0);
         $sumsPrev30d = (float) ($prev30d->sums ?? 0);
 
@@ -55,20 +80,13 @@ class AuthorStatsService
 
         $deltaAvg = $rating30d - $ratingPrev30d;
         $weight = log($votes30d + 1);
+
         $trendingScore = $deltaAvg * $weight;
         $popularityScore = $rating30d * $weight;
 
         // IMDb logic
-            $m = DB::table('rating_daily_summary')
-            ->join('produk_bukus', 'produk_buku_id', '=', 'rating_daily_summary.produk_buku_id')
-            ->groupBy('produk_bukus.penulis_buku_id')
-            ->selectRaw('SUM(total_votes) as author_votes')
-            ->orderBy('author_votes')
-            ->skip((int) (DB::table('penulis_bukus')->count() * 0.25))
-            ->value('author_votes') ?? 30;
-        $C = DB::table('rating_daily_summary')
-            ->selectRaw('SUM(total_sums) / NULLIF(SUM(total_votes), 0) as global_avg')
-            ->value('global_avg') ?? 0.0;
+        $m = $this->calculateM();
+        $C = $this->calculateGLobalAverage();
         $books = DB::table('data_voters')
             ->join('produk_bukus', 'produk_bukus.id', '=', 'data_voters.produk_buku_id')
             ->where('produk_bukus.penulis_buku_id', $authorId)
