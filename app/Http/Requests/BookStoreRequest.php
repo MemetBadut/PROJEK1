@@ -35,13 +35,13 @@ class BookStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'nama_buku'         => ['required', 'string', 'max:255'],
-            'penulis_buku_id'   => ['required', 'integer', 'exists:penulis_bukus,id'],
-            'publisher_buku_id' => ['required', 'integer', 'exists:publisher_bukus,id'],
-            'isbn'              => ['required', 'string', 'max:20', 'unique:produk_bukus,isbn'],
-            'status_buku'       => ['required', 'string', 'in:tersedia,dipinjam,tersimpan'],
-            'slug'              => ['required', 'string', 'max:255', 'unique:produk_bukus,slug'],
-            'sinopsis'          => ['required', 'string'],
+            'nama_buku' => ['required', 'string', 'max:255'],
+            'penulis_buku_id' => ['required', 'integer', 'exists:penulis_bukus,id'],
+            'publisher_id' => ['required', 'integer', 'exists:publisher,id'],
+            'isbn' => ['required', 'string', 'max:20', 'unique:produk_bukus,isbn'],
+            'status_buku' => ['required', 'string', 'in:tersedia,dipinjam,tersimpan'],
+            'slug' => ['required', 'string', 'max:255', 'unique:produk_bukus,slug'],
+            'sinopsis' => ['required', 'string'],
         ];
     }
 

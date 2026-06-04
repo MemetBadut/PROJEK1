@@ -25,6 +25,7 @@ class TabelBukuSeeder extends Seeder
             $rows = ProdukBuku::factory()
                 ->count(min($batch, $total - $i))
                 ->make()
+                ->map(fn ($book) => $book->getAttributes())
                 ->toArray();
 
             DB::table('produk_bukus')->insert($rows);
