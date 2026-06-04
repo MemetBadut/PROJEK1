@@ -10,9 +10,6 @@ Route::post('/login', [AuthController::class, 'loginApi']);
 Route::middleware('auth:sanctum')->post('/logout', [AuthController::class, 'logoutApi']);
 
 Route::middleware('auth:sanctum')->group(function () {
-    Route::get('/login', [AuthController::class, 'loginApi']);
-    Route::post('/logout', [AuthController::class, 'logoutApi']);
-
     Route::apiResource('books', BookController::class)->only('store', 'update', 'destroy');
     Route::apiResource('ratings', RatingController::class)->only('store', 'update', 'destroy');
     Route::apiResource('authors', AuthorController::class)->only('store', 'update', 'destroy');
