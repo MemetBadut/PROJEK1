@@ -2,27 +2,25 @@
 
 namespace App\Observer;
 
+use App\Jobs\RebuildRatingAggregatesJob;
 use App\Models\RatingDailySummary;
 use App\Models\RatingUser;
-use App\Service\AuthorStatsService;
-use App\Service\RatingSummaryService;
 
 class RatingUserObserver
 {
-    public function __construct(
-        private RatingSummaryService $ratingSummaryService,
-        private AuthorStatsService $authorStatsService
-    ) {}
-
-    private function recalculate(RatingUser $rating)
+    private function dispatchRebuild(RatingUser $rating): void
     {
-        $this->ratingSummaryService->rebuildForBook((int) $rating->produk_buku_id);
+        $rating->loadMissing('produkBuku:id,penulis_buku_id');
 
-        $rating->load('produkBuku');
-        $authorId = (int) $rating->produkBuku?->penulis_buku_id;
-        if ($authorId > 0) {
-            $this->authorStatsService->rebuildForAuthor($authorId);
+        $authorId = (int) ($rating->produkBuku?->penulis_buku_id ?? 0);
+        if ($authorId <= 0) {
+            return;
         }
+
+        RebuildRatingAggregatesJob::dispatch(
+            (int) $rating->produk_buku_id,
+            $authorId
+        )->afterCommit();
     }
 
     public function created(RatingUser $rating): void
@@ -41,33 +39,31 @@ class RatingUserObserver
         $daily->increment('total_votes');
         $daily->increment('total_sums', $rating->ratings);
 
-        $this->ratingSummaryService->rebuildForBook((int) $rating->produk_buku_id);
-
-        $rating->load('produkBuku');
-        $authorId = (int) $rating->produkBuku?->penulis_buku_id;
-        if ($authorId > 0) {
-            $this->authorStatsService->rebuildForAuthor($authorId);
-        }
+        $this->dispatchRebuild($rating);
     }
 
-    public function updated(RatingUser $rating) {
-        $oldRating = $rating->getOriginal('ratings');
-        $newRating = $rating->ratings;
+    public function updated(RatingUser $rating): void
+    {
+        $oldRating = (int) $rating->getOriginal('ratings');
+        $newRating = (int) $rating->ratings;
         $diff = $newRating - $oldRating;
 
-        $daily = RatingDailySummary::where([
-            'produk_buku_id' => $rating->produk_buku_id,
-            'date' => $rating->created_at->toDateString(),
-        ])->first();
+        if ($diff !== 0) {
+            $daily = RatingDailySummary::where([
+                'produk_buku_id' => $rating->produk_buku_id,
+                'date' => $rating->created_at->toDateString(),
+            ])->first();
 
-        if ($daily && $diff !== 0) {
-            $daily->increment('total_sums', $diff);
+            if ($daily) {
+                $daily->increment('total_sums', $diff);
+            }
         }
 
-        $this->recalculate($rating);
+        $this->dispatchRebuild($rating);
     }
 
-    public function deleted(RatingUser $rating) {
+    public function deleted(RatingUser $rating): void
+    {
         $daily = RatingDailySummary::where([
             'produk_buku_id' => $rating->produk_buku_id,
             'date' => $rating->created_at->toDateString(),
@@ -78,6 +74,6 @@ class RatingUserObserver
             $daily->decrement('total_sums', $rating->ratings);
         }
 
-        $this->recalculate($rating);
+        $this->dispatchRebuild($rating);
     }
 }
