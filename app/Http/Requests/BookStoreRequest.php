@@ -20,7 +20,7 @@ class BookStoreRequest extends FormRequest
             'nama_buku' => $this->nama_buku ? trim($this->nama_buku) : null,
             'isbn' => $this->isbn ? trim($this->isbn) : null,
             'penulis_buku_id' => $this->penulis_buku_id ? (int)$this->penulis_buku_id : null,
-            'publisher_id' => $this->publisher_id ? (int)$this->publisher_buku_id : null,
+            'publisher_id' => $this->publisher_id ? (int)$this->publisher_id : null,
             'status_buku' => $this->status_buku ? trim($this->status_buku) : null,
             'slug' => $this->slug ? trim($this->slug) : null,
             'sinopsis' => $this->sinopsis ? trim($this->sinopsis) : null,
