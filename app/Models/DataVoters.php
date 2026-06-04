@@ -27,4 +27,9 @@ class DataVoters extends Model
     {
         return $this->belongsTo(RatingUser::class, 'rating_user_id', 'id');
     }
+
+    public function book()
+    {
+        return $this->belongsTo(ProdukBuku::class, 'produk_buku_id', 'id');
+    }
 }

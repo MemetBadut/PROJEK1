@@ -11,20 +11,42 @@ class VoteSubmissionService
     public function submit(int $userId, int $bookId, int $authorId, int $rating): RatingUser
     {
         return DB::transaction(function () use ($userId, $bookId, $authorId, $rating): RatingUser {
-            // Serialize writes per user to keep the 24-hour global rule race-safe.
-            DB::table('users')->where('id', $userId)->lockForUpdate()->first();
+            // Lock row user supaya check cooldown + update timestamp race-safe.
+            $lockedUser = DB::table('users')
+                ->select('id', 'last_vote_at')
+                ->where('id', $userId)
+                ->lockForUpdate()
+                ->first();
 
-            $check = VotingRules::validate($userId, $bookId, $authorId);
+            if (! $lockedUser) {
+                throw new DomainException('User tidak ditemukan.');
+            }
 
-            if (!($check['ok'] ?? false)) {
+            $check = VotingRules::validate(
+                $userId,
+                $bookId,
+                $authorId,
+                $lockedUser->last_vote_at
+            );
+
+            if (! ($check['ok'] ?? false)) {
                 throw new DomainException($check['message'] ?? 'Voting gagal diproses.');
             }
 
-            return RatingUser::create([
+            $created = RatingUser::create([
                 'user_id' => $userId,
                 'produk_buku_id' => $bookId,
                 'ratings' => $rating,
             ]);
+
+            DB::table('users')
+                ->where('id', $userId)
+                ->update([
+                    'last_vote_at' => now(),
+                    'updated_at' => now(),
+                ]);
+
+            return $created;
         });
     }
 }
