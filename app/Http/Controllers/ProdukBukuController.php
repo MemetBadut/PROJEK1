@@ -13,11 +13,18 @@ class ProdukBukuController extends Controller
     public function index(Request $request)
     {
         $data_buku = ProdukBuku::listBooks()
-        ->when($request->filled('status'), function ($q) use ($request){
-            $q->where('status_buku', $request->status);
-        })
-        ->paginate(20)
-        ->withQueryString();
+            ->when($request->filled('sorting'), function ($q) use ($request) {
+                return match ($request->sorting) {
+                    'most', 'least' => $q->totalRate($request->sorting),
+                    'name_asc', 'name_desc' => $q->alphabet($request->sorting),
+                    default => $q
+                };
+            })
+            ->when($request->filled('search'), function ($q) use ($request) {
+                $q->search($request->search);
+            })
+            ->paginate(20)
+            ->withQueryString();
         return view('data_buku.index', compact('data_buku'));
     }
 

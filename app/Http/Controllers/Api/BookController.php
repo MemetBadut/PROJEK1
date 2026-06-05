@@ -21,9 +21,11 @@ class BookController extends Controller
 
         $books = ProdukBuku::listBooks()
             ->when(isset($validated['sorting']), function ($q)  use ($validated) {
-                return in_array($validated['sorting'], ['most', 'least'], true)
-                    ? $q->totalRate($validated['sorting'])
-                    : $q->alphabet($validated['sorting']);
+                return match($validated['sorting']){
+                    'most', 'least' => $q->totalRate(($validated['sorting'])),
+                    'name_asc', 'name_desc' => $q->alphabet($validated['sorting']),
+                    default => $q
+                };
             })
             ->when(isset($validated['search']), fn($q) => $q->search($validated['search']))
             ->when(isset($validated['status']), fn($q) => $q->status($validated['status']))
