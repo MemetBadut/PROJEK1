@@ -14,7 +14,7 @@ class ProdukBukuController extends Controller
     {
         $data_buku = ProdukBuku::listBooks()
         ->when($request->filled('sorting'), function ($q) use ($request){
-            match($request->sorting){
+            return match($request->sorting){
                 'most', 'least' => $q->totalRate($request->sorting),
                 'name_asc', 'name_desc' => $q->alphabet($request->sorting),
                 default => $q
