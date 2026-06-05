@@ -22,7 +22,7 @@ class AuthorStatsService
         );
     }
 
-    public function calculateGLobalAverage(){
+    public function calculateGlobalAverage(){
         return (float) (
             DB::table('rating_daily_summary')
             ->selectRaw('SUM(total_sums) / NULLIF(SUM(total_votes), 0) as global_avg')
@@ -30,7 +30,7 @@ class AuthorStatsService
         );
     }
 
-    public function rebuildForAuthor(int $authorId): void
+    public function rebuildForAuthor(int $authorId, ?float $m, ?float $globalAvg): void
     {
         $dailyStats = DB::table('rating_daily_summary')
             ->join('produk_bukus', 'produk_bukus.id', '=', 'rating_daily_summary.produk_buku_id')
@@ -85,8 +85,8 @@ class AuthorStatsService
         $popularityScore = $rating30d * $weight;
 
         // IMDb logic
-        $m = $this->calculateM();
-        $C = $this->calculateGLobalAverage();
+        $m = $m ?? $this->calculateM();
+        $C = $globalAvg ?? $this->calculateGLobalAverage();
         $books = DB::table('data_voters')
             ->join('produk_bukus', 'produk_bukus.id', '=', 'data_voters.produk_buku_id')
             ->where('produk_bukus.penulis_buku_id', $authorId)
