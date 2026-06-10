@@ -13,6 +13,7 @@ use App\Service\VoteSubmissionService;
 use Illuminate\Database\QueryException;
 use DomainException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Database\UniqueConstraintViolationException;
 
 class RatingController extends Controller
 {
@@ -29,6 +30,21 @@ class RatingController extends Controller
         return RatingResource::collection($ratings);
     }
 
+    /**
+     * Store a newly created resource in storage.
+     */
+    private function isUniqueConstraintViolation(QueryException $e): bool
+    {
+        $sqlState = (string) ($e->errorInfo[0] ?? $e->getCode());
+        $driverCode = (string) ($e->errorInfo[1] ?? '');
+        $message = strtolower($e->getMessage());
+
+        return in_array($sqlState, ['23000', '23505'], true)
+            || in_array($driverCode, ['1062', '19', '2067'], true)
+            || str_contains($message, 'unique')
+            || str_contains($message, 'duplicate');
+    }
+
     public function store(StoreRatingRequest $request, VoteSubmissionService $voteSubmissionService)
     {
         $validated = $request->validated();
@@ -41,10 +57,17 @@ class RatingController extends Controller
                 (int) $validated['ratings'],
             );
         } catch (DomainException $e) {
-            return response()->json(['message' => $e->getMessage()], 422);
+            return back()->withErrors(['voting' => $e->getMessage()])->withInput();
+        } catch (UniqueConstraintViolationException $e) {
+            return back()->withErrors([
+                'voting' => 'Kamu sudah pernah memberikan rating untuk buku ini.',
+            ])->withInput();
         } catch (QueryException $e) {
-            if ($e->errorInfo[1] == 1062) {
-                return response()->json(['message' => 'Kamu sudah pernah memberikan rating untuk buku ini.'], 422);
+            // fallback untuk variasi driver/versi
+            if ($this->isUniqueConstraintViolation($e)) {
+                return back()->withErrors([
+                    'voting' => 'Kamu sudah pernah memberikan rating untuk buku ini.',
+                ])->withInput();
             }
             throw $e;
         }
@@ -73,21 +96,35 @@ class RatingController extends Controller
 
     public function update(UpdateRatingRequest $request, string $id)
     {
-        $rating = RatingUser::findOrFail($id);
-
-        // Cek produk_buku_id harus sesuai dengan rating yang mau diupdate
-        if ((int) $request->produk_buku_id !== (int) $rating->produk_buku_id) {
+        try {
+            $rating = RatingUser::findOrFail($id);
+        } catch (ModelNotFoundException) {
             return response()->json([
-                'message' => 'produk_buku_id tidak sesuai dengan rating ini.'
+                'message' => 'Data rating tidak ditemukan.',
+            ], 404);
+        }
+
+        $validated = $request->validated();
+
+        if ((int) $rating->user_id !== (int) $request->user()->id) {
+            return response()->json([
+                'message' => 'Kamu tidak bisa mengubah rating milik orang lain.',
+            ], 403);
+        }
+
+        if (
+            array_key_exists('produk_buku_id', $validated)
+            && (int) $validated['produk_buku_id'] !== (int) $rating->produk_buku_id
+        ) {
+            return response()->json([
+                'message' => 'produk_buku_id tidak sesuai dengan rating ini.',
             ], 422);
         }
 
-        if ((int) $rating->user_id !== (int) $request->user()->id) {
-            return response()->json(['message' => 'Kamu tidak bisa mengubah rating milik orang lain.'], 403);
-        }
+        $rating->update([
+            'ratings' => $validated['ratings'],
+        ]);
 
-
-        $rating->update(['ratings' => $request->ratings]);
 
         return new RatingResource($rating->load(['voter', 'produkBuku']));
     }
