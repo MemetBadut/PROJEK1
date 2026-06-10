@@ -69,6 +69,8 @@ class BookUpdateRequest extends FormRequest
             // ignore ID buku yang sedang diupdate agar ISBN-nya sendiri tetap valid
             'isbn'            => ['sometimes', 'required', 'string', 'max:20', "unique:produk_bukus,isbn,{$bookId}"],
             'status_buku'     => ['sometimes', 'required', 'string', 'in:tersedia,dipinjam,tersimpan'],
+            'sinopsis'        => ['sometimes', 'nullable', 'string'],
+            'slug'            => ['sometimes', 'required', 'string', 'max:255', "unique:produk_bukus,slug,{$bookId}"],
         ];
     }
 
@@ -79,6 +81,8 @@ class BookUpdateRequest extends FormRequest
             'publisher_id.exists'    => 'Publisher tidak ditemukan.',
             'isbn.unique'            => 'ISBN ini sudah digunakan oleh buku lain.',
             'status_buku.in'         => 'Status hanya boleh: tersedia, dipinjam, tersimpan.',
+            'slug.unique'            => 'Slug ini sudah digunakan oleh buku lain.',
+            'sinopsis.string'        => 'Sinopsis harus berupa teks.',
         ];
     }
 }
