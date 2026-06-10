@@ -57,14 +57,12 @@ class RatingUserObserver
         $diff = $newRating - $oldRating;
 
         if ($diff !== 0) {
-            $daily = RatingDailySummary::where([
+            RatingDailySummary::query()
+            ->where([
                 'produk_buku_id' => $rating->produk_buku_id,
                 'date' => $rating->created_at->toDateString(),
-            ])->first();
-
-            if ($daily) {
-                $daily->increment('total_sums', $diff);
-            }
+            ])
+            ->increment('total_sums', $diff);
         }
 
         $this->dispatchRebuild($rating);
@@ -72,15 +70,19 @@ class RatingUserObserver
 
     public function deleted(RatingUser $rating): void
     {
-        $daily = RatingDailySummary::where([
-            'produk_buku_id' => $rating->produk_buku_id,
-            'date' => $rating->created_at->toDateString(),
-        ])->first();
+        RatingDailySummary::query()
+            ->where([
+                'produk_buku_id' => $rating->produk_buku_id,
+                'date' => $rating->created_at->toDateString(),
+            ])
+            ->decrement('total_votes');
 
-        if ($daily) {
-            $daily->decrement('total_votes');
-            $daily->decrement('total_sums', $rating->ratings);
-        }
+        RatingDailySummary::query()
+            ->where([
+                'produk_buku_id' => $rating->produk_buku_id,
+                'date' => $rating->created_at->toDateString(),
+            ])
+            ->decrement('total_sums', $rating->ratings);
 
         $this->dispatchRebuild($rating);
     }
