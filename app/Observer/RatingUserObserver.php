@@ -25,19 +25,27 @@ class RatingUserObserver
 
     public function created(RatingUser $rating): void
     {
-        $daily = RatingDailySummary::firstOrCreate(
-            [
-                'produk_buku_id' => $rating->produk_buku_id,
-                'date' => $rating->created_at->toDateString(),
-            ],
-            [
-                'total_votes' => 0,
-                'total_sums' => 0,
-            ]
-        );
+        $summaryKey = [
+            'produk_buku_id' => $rating->produk_buku_id,
+            'date' => $rating->created_at->toDateString(),
+        ];
 
-        $daily->increment('total_votes');
-        $daily->increment('total_sums', $rating->ratings);
+        RatingDailySummary::query()->insertOrIgnore([
+            ...$summaryKey,
+            'total_votes' => 0,
+            'total_sums' => 0,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        RatingDailySummary::query()
+            ->where($summaryKey)
+            ->increment('total_votes');
+
+        RatingDailySummary::query()
+            ->where($summaryKey)
+            ->increment('total_sums', $rating->ratings);
+
 
         $this->dispatchRebuild($rating);
     }
