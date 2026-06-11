@@ -18,10 +18,13 @@ class RatingUserFactory extends Factory
      */
     public function definition(): array
     {
+        $bukuId = ProdukBuku::query()->inRandomOrder()->value('id');
+        $usersId = DataVoters::query()->inRandomOrder()->value('id');
+
         return [
-            'data_voters_id' => DataVoters::inRandomOrder()->value('id'),
-            'produk_buku_id' => ProdukBuku::inRandomOrder()->value('id'),
-            'score' => fake()->numberBetween(1, 10),
+            'user_id' => $usersId,
+            'produk_buku_id' => $bukuId,
+            'ratings' => fake()->numberBetween(1, 10),
         ];
     }
 }
