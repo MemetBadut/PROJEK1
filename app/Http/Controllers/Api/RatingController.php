@@ -51,23 +51,25 @@ class RatingController extends Controller
 
         try {
             $rating = $voteSubmissionService->submit(
-                (int) $request->user()->id,
+                (int) $validated['user_id'],
                 (int) $validated['produk_buku_id'],
                 (int) $validated['author_id'],
                 (int) $validated['ratings'],
             );
         } catch (DomainException $e) {
-            return back()->withErrors(['voting' => $e->getMessage()])->withInput();
+            return response()->json([
+                'message' => $e->getMessage(),
+            ], 422);
         } catch (UniqueConstraintViolationException $e) {
-            return back()->withErrors([
-                'voting' => 'Kamu sudah pernah memberikan rating untuk buku ini.',
-            ])->withInput();
+            return response()->json([
+                'message' => 'Kamu sudah pernah memberikan rating untuk buku ini.',
+            ], 422);
         } catch (QueryException $e) {
             // fallback untuk variasi driver/versi
             if ($this->isUniqueConstraintViolation($e)) {
-                return back()->withErrors([
-                    'voting' => 'Kamu sudah pernah memberikan rating untuk buku ini.',
-                ])->withInput();
+                return response()->json([
+                    'message' => 'Kamu sudah pernah memberikan rating untuk buku ini.',
+                ], 422);
             }
             throw $e;
         }
@@ -106,7 +108,7 @@ class RatingController extends Controller
 
         $validated = $request->validated();
 
-        if ((int) $rating->user_id !== (int) $request->user()->id) {
+        if ((int) $rating->user_id !== (int) $validated['user_id']) {
             return response()->json([
                 'message' => 'Kamu tidak bisa mengubah rating milik orang lain.',
             ], 403);
@@ -142,7 +144,9 @@ class RatingController extends Controller
             );
         }
 
-        if ((int) $rating->user_id !== (int) $request->user()->id) {
+        $validated = $request->validated();
+
+        if ((int) $rating->user_id !== (int) $validated['user_id']) {
             return response()->json(['message' => 'Kamu tidak bisa menghapus rating milik orang lain.'], 403);
         }
 
