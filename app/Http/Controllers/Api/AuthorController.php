@@ -81,6 +81,7 @@ class AuthorController extends Controller
             );
         }
 
+        $author->stats()->delete();
         $author->delete();
 
         return response()->json(['message' => 'Author berhasil dihapus.'], 200);
