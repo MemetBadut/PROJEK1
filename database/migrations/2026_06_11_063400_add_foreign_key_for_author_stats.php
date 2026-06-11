@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::table('author_stats', function (Blueprint $table) {
             $table->foreign('penulis_buku_id')
                 ->references('id')
-                ->on('penulis_buku')
-                ->onDelete('cascade');
+                ->on('penulis_bukus')
+                ->cascadeOnDelete();
         });
     }
 
