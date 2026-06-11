@@ -8,6 +8,7 @@ use App\Http\Requests\BookStoreRequest;
 use App\Http\Requests\BookUpdateRequest;
 use App\Http\Resources\BookResource;
 use App\Models\ProdukBuku;
+use App\Service\AuthorStatsService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class BookController extends Controller
@@ -21,7 +22,7 @@ class BookController extends Controller
 
         $books = ProdukBuku::listBooks()
             ->when(isset($validated['sorting']), function ($q)  use ($validated) {
-                return match($validated['sorting']){
+                return match ($validated['sorting']) {
                     'most', 'least' => $q->totalRate(($validated['sorting'])),
                     'name_asc', 'name_desc' => $q->alphabet($validated['sorting']),
                     default => $q
@@ -86,7 +87,7 @@ class BookController extends Controller
         return new BookResource($book);
     }
 
-    public function destroy(string $id)
+    public function destroy(string $id, AuthorStatsService $authorStatsService)
     {
         try {
             $book = ProdukBuku::findOrFail($id);
@@ -99,7 +100,11 @@ class BookController extends Controller
             );
         }
 
+        $authorId = $book->penulis_buku_id;
+
         $book->delete();
+
+        $authorStatsService->rebuildForAuthor($authorId, null, null);
 
         return response()->json(['message' => 'Buku berhasil dihapus.'], 200);
     }
