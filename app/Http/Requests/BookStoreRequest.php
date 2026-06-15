@@ -39,7 +39,7 @@ class BookStoreRequest extends FormRequest
             'penulis_buku_id' => ['required', 'integer', 'exists:penulis_bukus,id'],
             'publisher_id' => ['required', 'integer', 'exists:publisher,id'],
             'isbn' => ['required', 'string', 'max:20', 'unique:produk_bukus,isbn'],
-            'status_buku' => ['required', 'string', 'in:tersedia,dipinjam,tersimpan'],
+            'status_buku' => ['required', 'string', 'in:tersedia,dipinjam,dipesan'],
             'slug' => ['required', 'string', 'max:255', 'unique:produk_bukus,slug'],
             'sinopsis' => ['required', 'string'],
         ];
