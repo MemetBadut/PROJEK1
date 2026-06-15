@@ -23,7 +23,7 @@
                             </option>
                             <option value="available" {{ request('sorting') == 'available' ? 'selected' : '' }}>Tersedia
                             </option>
-                            <option value="reserved" {{ request('sorting') == 'reserved' ? 'selected' : '' }}>Tersimpan
+                            <option value="reserved" {{ request('sorting') == 'reserved' ? 'selected' : '' }}>Dipesan
                             </option>
                             <option value="rented" {{ request('sorting') == 'rented' ? 'selected' : '' }}>Terpinjam
                             </option>

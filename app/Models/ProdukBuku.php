@@ -23,21 +23,40 @@ class ProdukBuku extends Model
 
     protected $table = 'produk_bukus';
 
+    #relasi Author
     public function penulisBuku()
     {
         return $this->belongsTo(PenulisBuku::class, 'penulis_buku_id', 'id');
     }
 
+    #relasi Kategori
     public function kategoriBuku()
     {
         return $this->belongsToMany(KategoriBuku::class, 'buku_kategori_pivot', 'produk_buku_id', 'kategori_buku_id');
     }
 
+    #relasi Toko
+    public function lokasiToko()
+    {
+        return $this->belongsToMany(LokasiToko::class,
+            'table_inventori_toko_buku',
+            'produk_buku_id',
+            'lokasi_toko_id'
+        )->withPivot([
+            'stok_total',
+            'stok_tersedia',
+            'kode_rak'
+        ])->withTimestamps();
+    }
+
+    #relasi ratingUser
     public function ratingUser()
     {
         return $this->hasMany(RatingUser::class, 'produk_buku_id', 'id');
     }
 
+
+    #relasi publisher
     public function publisherBuku()
     {
         return $this->belongsTo(PublisherBuku::class, 'publisher_id', 'id');
@@ -67,7 +86,7 @@ class ProdukBuku extends Model
         return match ($status) {
             'available' => $query->where('status_buku', 'tersedia'),
             'rented' => $query->where('status_buku', 'dipinjam'),
-            'reserved' => $query->where('status_buku', 'tersimpan'),
+            'reserved' => $query->where('status_buku', 'dipesan'),
             default => $query
         };
     }
