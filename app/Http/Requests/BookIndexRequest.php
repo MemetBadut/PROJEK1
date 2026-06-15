@@ -34,7 +34,7 @@ class BookIndexRequest extends FormRequest
         return [
             'search' => ['nullable', 'string', 'max:100'],
             'sorting' => ['nullable', 'string', 'in:most,least,name_asc,name_desc'],
-            'status' => ['nullable', 'string', 'in:tersedia,dipinjam,tersimpan'],
+            'status' => ['nullable', 'string', 'in:tersedia,dipinjam,dipesan'],
             'per_page' => ['nullable', 'integer', 'min:1', 'max:100'],
         ];
     }
@@ -43,7 +43,7 @@ class BookIndexRequest extends FormRequest
     {
         return [
             'sorting.in'   => 'Urutan hanya boleh: most, least, name_asc, name_desc.',
-            'status.in'    => 'Status buku hanya boleh: tersedia, dipinjam, tersimpan.',
+            'status.in'    => 'Status buku hanya boleh: tersedia, dipinjam, dipesan.',
             'per_page.min' => 'Jumlah per halaman minimal 1.',
             'per_page.max' => 'Jumlah per halaman maksimal 100.',
             'search.max'   => 'Keyword pencarian maksimal 100 karakter.',
