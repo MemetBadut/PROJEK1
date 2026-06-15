@@ -32,7 +32,7 @@ class ProdukBukuFactory extends Factory
         $status = fake()->randomElement(
             array_merge(
                 array_fill(0, 80, 'tersedia'),
-                array_fill(0, 15, 'tersimpan'),
+                array_fill(0, 15, 'dipesan'),
                 array_fill(0, 5, 'dipinjam'),
             )
         );
