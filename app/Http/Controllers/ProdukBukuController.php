@@ -17,6 +17,7 @@ class ProdukBukuController extends Controller
                 return match ($request->sorting) {
                     'most', 'least' => $q->totalRate($request->sorting),
                     'name_asc', 'name_desc' => $q->alphabet($request->sorting),
+                    'available', 'rented', 'reserved' => $q->filterCategory($request->sorting),
                     default => $q
                 };
             })
