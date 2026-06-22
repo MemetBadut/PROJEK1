@@ -29,14 +29,6 @@ class ProdukBukuFactory extends Factory
         $penulisIds ??= PenulisBuku::pluck('id')->toArray();
         $publisherIds ??= PublisherBuku::pluck('id')->toArray();
 
-        $status = fake()->randomElement(
-            array_merge(
-                array_fill(0, 80, 'tersedia'),
-                array_fill(0, 15, 'dipesan'),
-                array_fill(0, 5, 'dipinjam'),
-            )
-        );
-
         $createdAt = fake()->dateTimeBetween('-3 years', 'now');
 
         return [
@@ -44,8 +36,7 @@ class ProdukBukuFactory extends Factory
             'penulis_buku_id' => fake()->randomElement($penulisIds),
             'isbn' => fake()->isbn10(),
             'publisher_id' => fake()->randomElement($publisherIds),
-            'status_buku' => $status,
-            'rating_enabled' => $status === 'tersedia',
+            'rating_enabled' => true,
             'slug' => Str::slug($title . '-' . $uniqueSuffix),
             'sinopsis' => $sinopsis,
             'created_at' => $createdAt,
