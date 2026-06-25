@@ -33,10 +33,12 @@ class DatabaseSeeder extends Seeder
             TabelAuthorSeeder::class,
             PublisherBukuSeeder::class,
             TabelBukuSeeder::class,
+            LokasiTokoSeeder::class,
+            TablePivotLokasiToko::class,
+            TabelPivotBukuKategori::class,
             RatingSeeder::class,
             RatingDailySummarySeeder::class,
             DummyVoterSeeder::class,
-            TabelPivotBukuKategori::class,
             AuthorStatsSeeder::class,
         ]);
     }
