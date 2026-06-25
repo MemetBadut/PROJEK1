@@ -17,26 +17,29 @@ class TabelPivotBukuKategori extends Seeder
     {
         $kategoriIds = KategoriBuku::pluck('id')->toArray();
 
-        ProdukBuku::select('id')->chunk(500, function ($bukuChunk) use ($kategoriIds) {
-            $rows = [];
+        ProdukBuku::query()
+            ->whereDoesntHave('kategoriBuku')
+            ->select('id')
+            ->chunkById(500, function ($bukuChunk) use ($kategoriIds) {
+                $rows = [];
 
-            foreach ($bukuChunk as $buku) {
-                $randomKategori = collect($kategoriIds)
-                    ->shuffle()
-                    ->take(5);
+                foreach ($bukuChunk as $buku) {
+                    $randomKategori = collect($kategoriIds)
+                        ->shuffle()
+                        ->take(5);
 
 
-                foreach ($randomKategori as $kategoriId) {
-                    $rows[] = [
-                        'produk_buku_id' => $buku->id,
-                        'kategori_buku_id' => $kategoriId,
-                        'created_at' => now(),
-                        'updated_at' => now(),
-                    ];
+                    foreach ($randomKategori as $kategoriId) {
+                        $rows[] = [
+                            'produk_buku_id' => $buku->id,
+                            'kategori_buku_id' => $kategoriId,
+                            'created_at' => now(),
+                            'updated_at' => now(),
+                        ];
+                    }
                 }
-            }
 
-            DB::table('buku_kategori_pivot')->insert($rows);
-        });
+                DB::table('buku_kategori_pivot')->insert($rows);
+            });
     }
 }
