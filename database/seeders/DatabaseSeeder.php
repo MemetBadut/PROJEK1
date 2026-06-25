@@ -2,16 +2,17 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
-use Database\Seeders\UserSeeder;
-use Database\Seeders\RatingSeeder;
-use Database\Seeders\DummyVoterSeeder;
 use Database\Seeders\AuthorStatsSeeder;
+use Database\Seeders\DummyVoterSeeder;
 use Database\Seeders\KategoriBukuSeeder;
+use Database\Seeders\LokasiTokoSeeder;
 use Database\Seeders\PublisherBukuSeeder;
-use Database\Seeders\TabelPivotBukuKategori;
 use Database\Seeders\RatingDailySummarySeeder;
+use Database\Seeders\RatingSeeder;
+use Database\Seeders\TabelPivotBukuKategori;
+use Database\Seeders\UserSeeder;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
 {
