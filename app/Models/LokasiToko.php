@@ -2,19 +2,29 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class LokasiToko extends Model
 {
+    use HasFactory;
+
     protected $table = 'lokasi_toko';
 
     protected $fillable = [
         'kode_toko',
         'nama_toko',
-        'lokasi_toko',
+        'alamat_toko',
         'kota',
-        'status_aktif'
+        'status_aktif',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'status_aktif' => 'boolean',
+        ];
+    }
 
     #Relasi Many to Many
     public function produkBuku()
@@ -26,6 +36,8 @@ class LokasiToko extends Model
             )->withPivot([
                 'stok_total',
                 'stok_tersedia',
+                'stok_dipinjam',
+                'stok_dipesan',
                 'kode_rak'
             ])->withTimestamps();
     }
