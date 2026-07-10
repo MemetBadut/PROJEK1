@@ -19,7 +19,7 @@ class BookIndexRequest extends FormRequest
         $this->merge([
             'status' => $this->status ?? null,
             'search' => $this->search ? trim($this->search) : null,
-            'per_page' => $this->per_page ? (int)$this->per_page : 20
+            'per_page' => $this->filled('per_page') ? (int) $this->input('per_page') : null,
         ]);
     }
 
@@ -33,8 +33,9 @@ class BookIndexRequest extends FormRequest
     {
         return [
             'search' => ['nullable', 'string', 'max:100'],
-            'sorting' => ['nullable', 'string', 'in:most,least,name_asc,name_desc'],
-            'status' => ['nullable', 'string', 'in:tersedia,dipinjam,dipesan'],
+            'sorting' => ['nullable', 'string', 'in:most,least,rating_desc,rating_asc,name_asc,name_desc'],
+            'status' => ['nullable', 'string', 'in:available,rented,reserved'],
+            'lokasi_toko_id' => ['nullable', 'integer', 'exists:lokasi_toko,id'],
             'per_page' => ['nullable', 'integer', 'min:1', 'max:100'],
         ];
     }
@@ -42,8 +43,9 @@ class BookIndexRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'sorting.in'   => 'Urutan hanya boleh: most, least, name_asc, name_desc.',
-            'status.in'    => 'Status buku hanya boleh: tersedia, dipinjam, dipesan.',
+            'sorting.in'   => 'Pilihan urutan buku tidak valid.',
+            'status.in'    => 'Status buku hanya boleh: available, rented, atau reserved.',
+            'lokasi_toko_id.exists' => 'Lokasi toko tidak ditemukan.',
             'per_page.min' => 'Jumlah per halaman minimal 1.',
             'per_page.max' => 'Jumlah per halaman maksimal 100.',
             'search.max'   => 'Keyword pencarian maksimal 100 karakter.',
@@ -56,6 +58,7 @@ class BookIndexRequest extends FormRequest
             'search'   => 'kata kunci pencarian',
             'sorting'  => 'urutan',
             'status'   => 'status buku',
+            'lokasi_toko_id' => 'lokasi toko',
             'per_page' => 'jumlah per halaman',
         ];
     }

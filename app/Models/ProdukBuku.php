@@ -45,6 +45,8 @@ class ProdukBuku extends Model
         )->withPivot([
             'stok_total',
             'stok_tersedia',
+            'stok_dipinjam',
+            'stok_dipesan',
             'kode_rak'
         ])->withTimestamps();
     }
@@ -81,14 +83,76 @@ class ProdukBuku extends Model
         });
     }
 
-    public function scopeFilterCategory($query, $status)
+    public function scopeFilterStore($query, int $storeId)
     {
-        return match ($status) {
-            'available' => $query->where('status_buku', 'tersedia'),
-            'rented' => $query->where('status_buku', 'dipinjam'),
-            'reserved' => $query->where('status_buku', 'dipesan'),
-            default => $query
+        return $query->whereHas('lokasiToko', function ($storeQuery) use ($storeId) {
+            $storeQuery->where('lokasi_toko.id', $storeId);
+        });
+    }
+
+    public function scopeFilterAvailability($query, string $status, ?int $storeId = null)
+    {
+        $atStore = function ($storeQuery) use ($storeId) {
+            $storeQuery->when($storeId, function ($query, $id) {
+                $query->where('lokasi_toko.id', $id);
+            });
         };
+
+        return match ($status) {
+            'available' => $query->whereHas('lokasiToko', function ($storeQuery) use ($atStore) {
+                $atStore($storeQuery);
+                $storeQuery->where('table_inventori_toko_buku.stok_tersedia', '>', 0);
+            }),
+
+            'rented' => $query
+                ->whereDoesntHave('lokasiToko', function ($storeQuery) use ($atStore) {
+                    $atStore($storeQuery);
+                    $storeQuery->where('table_inventori_toko_buku.stok_tersedia', '>', 0);
+                })
+                ->whereHas('lokasiToko', function ($storeQuery) use ($atStore) {
+                    $atStore($storeQuery);
+                    $storeQuery->where('table_inventori_toko_buku.stok_dipinjam', '>', 0);
+                }),
+
+            'reserved' => $query
+                ->whereDoesntHave('lokasiToko', function ($storeQuery) use ($atStore) {
+                    $atStore($storeQuery);
+                    $storeQuery->where(function ($inventoryQuery) {
+                        $inventoryQuery
+                            ->where('table_inventori_toko_buku.stok_tersedia', '>', 0)
+                            ->orWhere('table_inventori_toko_buku.stok_dipinjam', '>', 0);
+                    });
+                })
+                ->whereHas('lokasiToko', function ($storeQuery) use ($atStore) {
+                    $atStore($storeQuery);
+                    $storeQuery->where('table_inventori_toko_buku.stok_dipesan', '>', 0);
+                }),
+
+            default => $query,
+        };
+    }
+
+    public function availabilityStatus(?int $storeId = null): string
+    {
+        $stores = $this->lokasiToko;
+
+        if ($storeId !== null) {
+            $stores = $stores->where('id', $storeId);
+        }
+
+        if ($stores->sum(fn ($store) => (int) $store->pivot->stok_tersedia) > 0) {
+            return 'available';
+        }
+
+        if ($stores->sum(fn ($store) => (int) $store->pivot->stok_dipinjam) > 0) {
+            return 'rented';
+        }
+
+        if ($stores->sum(fn ($store) => (int) $store->pivot->stok_dipesan) > 0) {
+            return 'reserved';
+        }
+
+        return 'unavailable';
     }
 
     public function scopeFilterYear($query, $year)
@@ -100,14 +164,28 @@ class ProdukBuku extends Model
 
     public function scopeListBooks($query)
     {
-        return $query->select('id', 'nama_buku', 'penulis_buku_id', 'publisher_id', 'status_buku', 'slug', 'isbn')
+        return $query->select([
+            'produk_bukus.id',
+            'produk_bukus.nama_buku',
+            'produk_bukus.penulis_buku_id',
+            'produk_bukus.publisher_id',
+            'produk_bukus.status_buku',
+            'produk_bukus.slug',
+            'produk_bukus.isbn',
+            'data_voters.total_voters',
+            'data_voters.avg_rating',
+            'data_voters.avg_7_days',
+            'data_voters.trend_7_days',
+            'data_voters.trend_direction',
+            'data_voters.recent_popularity_score',
+        ])
+            ->leftJoin('data_voters', 'data_voters.produk_buku_id', '=', 'produk_bukus.id')
             ->with([
                 'kategoriBuku:id,kategori_buku',
                 'penulisBuku:id,nama_penulis',
-                'publisherBuku:id,nama_publisher'
-            ])
-            ->withCount('ratings as total_voters')
-            ->withAvg('ratings as avg_rating', 'ratings');
+                'publisherBuku:id,nama_publisher',
+                'lokasiToko:id,kode_toko,nama_toko,kota',
+            ]);
     }
 
     public function scopeTotalRate($query, $vote)
@@ -116,6 +194,23 @@ class ProdukBuku extends Model
             'most' => $query->orderBy('total_voters', 'desc'),
             'least' => $query->orderBy('total_voters', 'asc'),
             default => $query
+        };
+    }
+
+    public function scopeAverageRate($query, $sorting)
+    {
+        return match ($sorting) {
+            'rating_desc' => $query
+                ->orderByRaw('data_voters.avg_rating IS NULL')
+                ->orderByDesc('data_voters.avg_rating')
+                ->orderByDesc('data_voters.total_voters')
+                ->orderBy('produk_bukus.id'),
+            'rating_asc' => $query
+                ->orderByRaw('data_voters.avg_rating IS NULL')
+                ->orderBy('data_voters.avg_rating')
+                ->orderByDesc('data_voters.total_voters')
+                ->orderBy('produk_bukus.id'),
+            default => $query,
         };
     }
 

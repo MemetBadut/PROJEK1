@@ -24,6 +24,7 @@ class BookController extends Controller
             ->when(isset($validated['sorting']), function ($q)  use ($validated) {
                 return match ($validated['sorting']) {
                     'most', 'least' => $q->totalRate(($validated['sorting'])),
+                    'rating_desc', 'rating_asc' => $q->averageRate($validated['sorting']),
                     'name_asc', 'name_desc' => $q->alphabet($validated['sorting']),
                     default => $q
                 };

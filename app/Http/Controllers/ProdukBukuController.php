@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\BookIndexRequest;
+use App\Models\LokasiToko;
 use App\Models\ProdukBuku;
 use Illuminate\Http\Request;
 
@@ -10,23 +12,35 @@ class ProdukBukuController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
+    public function index(BookIndexRequest $request)
     {
+        $filters = $request->validated();
+        $storeId = isset($filters['lokasi_toko_id'])
+            ? (int) $filters['lokasi_toko_id']
+            : null;
+
         $data_buku = ProdukBuku::listBooks()
-            ->when($request->filled('sorting'), function ($q) use ($request) {
-                return match ($request->sorting) {
-                    'most', 'least' => $q->totalRate($request->sorting),
-                    'name_asc', 'name_desc' => $q->alphabet($request->sorting),
-                    'available', 'rented', 'reserved' => $q->filterCategory($request->sorting),
-                    default => $q
+            ->when($storeId, fn ($query, $id) => $query->filterStore($id))
+            ->when($filters['status'] ?? null, fn ($query, $status) => $query
+                ->filterAvailability($status, $storeId))
+            ->when($filters['sorting'] ?? null, function ($query, $sorting) {
+                return match ($sorting) {
+                    'most', 'least' => $query->totalRate($sorting),
+                    'rating_desc', 'rating_asc' => $query->averageRate($sorting),
+                    'name_asc', 'name_desc' => $query->alphabet($sorting),
+                    default => $query,
                 };
             })
-            ->when($request->filled('search'), function ($q) use ($request) {
-                $q->search($request->search);
-            })
-            ->paginate(20)
+            ->when($filters['search'] ?? null, fn ($query, $search) => $query->search($search))
+            ->paginate($filters['per_page'] ?? 5)
             ->withQueryString();
-        return view('data_buku.index', compact('data_buku'));
+
+        $lokasiToko = LokasiToko::query()
+            ->where('status_aktif', true)
+            ->orderBy('nama_toko')
+            ->get(['id', 'kode_toko', 'nama_toko', 'kota']);
+
+        return view('data_buku.index', compact('data_buku', 'lokasiToko', 'storeId'));
     }
 
     /**
